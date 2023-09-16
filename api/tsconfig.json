@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "lib": ["ES2020", "ESNext.AsyncIterable", "ScriptHost"],
+        "module": "commonjs",
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "importsNotUsedAsValues": "remove",
+        "noEmitOnError": false,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noUnusedLocals": false,
+        "noImplicitReturns": true,
+        "preserveWatchOutput": true,
+        "skipLibCheck": true,
+        "assumeChangesOnlyAffectDirectDependencies": true,
+        "outDir": "lib",
+        "baseUrl": ".",
+        "rootDir": ".",
+        "paths": {
+            "@self/*": ["./src/*"]
+        }
+    },
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": ".",
+        "sourceType": "module"
+    },
+    "include": ["./src/**/*.ts", "./tests/**/*.test.ts"],
+    "compileOnSave": false
+}
+

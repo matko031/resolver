@@ -1,0 +1,74 @@
+{
+	"info": {
+		"_postman_id": "f68339f9-c333-406f-9351-d181a7ae8d33",
+		"name": "DynamicQR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29628132"
+	},
+	"item": [
+		{
+			"name": "CreateCode",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\": \"test.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/articles",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"articles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCodes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/qrcode",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"qrcode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteCode",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/qrcode/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"qrcode",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

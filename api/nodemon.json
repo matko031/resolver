@@ -1,0 +1,10 @@
+{
+    "ignore": [".git", "node_modules/**"],
+    "verbose": true,
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+    "watch": [".", "src", "specs"],
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "ext": "ts,js,json,yml,yaml"
+}

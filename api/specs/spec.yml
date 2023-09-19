@@ -3,10 +3,47 @@ info:
   title: Dynamic QR code redirection API
   version: 1.0.0
 paths:
+
+  /qrcode/{qrcodeId}:
+    get:
+      summary: Go to the final location of a qr code specified by the {qrID}
+      x-eov-operation-id: getQRCodeById
+      x-eov-operation-handler: qr
+      parameters:
+        - in: path
+          name: qrcodeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the QR code
+      responses:
+        '302':
+          description: Go to the URL pointed by the QR code
+        "404":
+            $ref: "#/components/responses/404"
+
+    delete:
+      summary: Delete a qr code
+      x-eov-operation-id: deleteQRCodeById
+      x-eov-operation-handler: qr
+      parameters:
+        - in: path
+          name: qrcodeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the QR code
+      responses:
+        '204':
+          description: Code has been deleted
+        "404":
+            $ref: "#/components/responses/404"
+
+
   /qrcode:
     get:
       summary: Get all the QR entries
-      x-eov-operation-id: getQRCode
+      x-eov-operation-id: getAllQRCodes
       x-eov-operation-handler: qr
       responses:
         '200':
@@ -35,6 +72,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QR'
+        "400":
+            $ref: "#/components/responses/400"
+        "404":
+            $ref: "#/components/responses/404"
+
+
+                  #put:
+                  #  summary: Update an existing QR code
+                  #  x-eov-operation-id: updateQRCode
+                  #  x-eov-operation-handler: qr
+                  #  requestBody:
+                  #    required: true
+                  #    content:
+                  #      application/json:
+                  #        schema:
+                  #          $ref: '#/components/schemas/QRInput'
+                  #  responses:
+                  #    '200':
+                  #      description: Modified QR
+                  #      content:
+                  #        application/json:
+                  #          schema:
+                  #            $ref: '#/components/schemas/QR'
 
 components:
   schemas:
@@ -42,7 +102,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: number
         url:
           type: string
       required:
@@ -56,3 +116,39 @@ components:
           type: string
       required:
         - url
+
+    "4xxBody":
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            title: Error
+            properties:
+              message:
+                type: string
+      required: [errors]
+
+
+  responses:
+    "400":
+      description: Bad request.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/4xxBody"
+    "401":
+      description: Unauthorized.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/4xxBody"
+    "404":
+      description: Not Found.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/4xxBody"

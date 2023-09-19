@@ -19,7 +19,8 @@
         "baseUrl": ".",
         "rootDir": ".",
         "paths": {
-            "@self/*": ["./src/*"]
+            "@self/*": ["./src/*"],
+            "@models/*": ["./src/models/*"]
         }
     },
     "parserOptions": {

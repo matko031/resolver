@@ -1,0 +1,32 @@
+version: "3.1"
+services:
+  qr:
+    build:
+      context: api/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api/:/home/node/app/
+    container_name: amodamo-qr-api
+    command: npm run dev
+    depends_on:
+      - database
+
+  database:
+    build:
+      context: database
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    container_name: amodamo-qr-database
+    volumes:
+      - ./database/persistent_storage:/var/lib/mysql
+    expose:
+      - '3306'
+    ports:
+      - 3306:3306
+
+
+
+

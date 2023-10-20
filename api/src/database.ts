@@ -1,5 +1,6 @@
 import { Sequelize, Options, Transaction } from "sequelize";
 import config from "@self/environment";
+import * as models from "@models/init_models";
 
 const sequelize: Sequelize = new Sequelize({
     database: config.database_name,
@@ -10,6 +11,12 @@ const sequelize: Sequelize = new Sequelize({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
 } as Options);
 
+const db = {
+    Sequelize,
+    sequelize,
+    ...models.initModels(sequelize),
+};
 
-export default sequelize;
+
+export default db;
 

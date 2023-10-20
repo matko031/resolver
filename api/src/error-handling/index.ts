@@ -215,6 +215,7 @@ export const unhandledRejection = (
  * @exports uncaughtException
  */
 export const uncaughtException = (error: Error): void => {
+    console.log(error);
     errorHandler.handleError(error);
     if (!errorHandler.isTrustedError(error)) {
         new Promise(() => process.exit(1)); // Crash the app if fatal error

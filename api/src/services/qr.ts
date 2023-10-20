@@ -1,7 +1,8 @@
 import {Request, Response} from 'express';
 
 import {components} from "@self/types/api";
-import QR_code from "@models/QR_code";
+import db from "@self/database";
+const QR_code = db.QR_code;
 
 
 type QR_code_schema = components["schemas"]["QR"];

@@ -1,16 +1,24 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import sequelize from '@self/database';
+import * as Sequelize from "sequelize";
 
-export default class QR_code extends Model<InferAttributes<QR_code>, InferCreationAttributes<QR_code>> {
+import { DataTypes, Model, Optional, CreationOptional } from 'sequelize';
+
+export type QR_codeAttributes = {
+    id: number,
+    url: string
+}
+
+export type QR_codeCreationAttributes = Optional<QR_codeAttributes, "id">
+
+export class QR_code extends Model<QR_codeAttributes, QR_codeCreationAttributes> {
     declare id: CreationOptional<number>;
     declare url: string;
 
 
-    public static initModel(): void {
+    static initModel(sequelize: Sequelize.Sequelize): typeof QR_code {
         console.log("QR_code init model");
-        QR_code.init(
+        return sequelize.define(
+            "QR_code",
             {
-                // Model attributes are defined here
                 id: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
@@ -21,13 +29,11 @@ export default class QR_code extends Model<InferAttributes<QR_code>, InferCreati
                     type: DataTypes.STRING,
                     allowNull: true
                 }
-            }, {
-                // Other model options go here
-                sequelize, // We need to pass the connection instance
-                modelName: 'QR_code', 
+            },
+            {
                 tableName: 'QR_code',
             }
-        )
+        ) as typeof QR_code;
     }
 }
 

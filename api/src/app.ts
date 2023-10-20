@@ -5,11 +5,8 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import * as path from "path";
 import { httpLoggerMiddleware } from "@self/logging";
 
-import sequelize from '@self/database';
+//import db from '@self/database';
 import config from "@self/environment";
-
-import QR_code from "@models/QR_code";
-QR_code.initModel();
 
 import {
     notFoundHandler,
@@ -80,7 +77,7 @@ process.on("uncaughtException", uncaughtException);
 
 // sync/create db tables if development
 if (config.env == "development"){
-   sequelize.sync({alter: true, match: /^dev/})
+   //db.sequelize.sync({alter: true, match: /^dev/})
 }
 
 

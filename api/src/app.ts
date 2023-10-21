@@ -5,7 +5,7 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import * as path from "path";
 import { httpLoggerMiddleware } from "@self/logging";
 
-//import db from '@self/database';
+import db from '@self/database';
 import config from "@self/environment";
 
 import {
@@ -18,28 +18,50 @@ import {
 } from "@self/error-handling/index";
 
 
-
 const app = express();
 app.use(express.json());
 
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: path.join(__dirname, "..", "specs", "spec.yml"),
-    validateRequests: true, 
-    validateResponses: false,
-    operationHandlers: path.join(__dirname, "services"),
-  }),
-);
 
 // Filters http methods before routing
-app.use(allowedHttpMethods);
+app.use(allowedHttpMethods(["GET", "POST", "DELETE"]));
+
+// API key authentication
+const auth = (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.get("Authorization");
+    let authOK = false;
+    if (authHeader){
+        const authHeaderList = authHeader.split(" ");
+        if ( authHeaderList.length == 2 && authHeaderList[0] === "Bearer" ) 
+        {
+            const token = authHeaderList[1];
+            if ( token && token === config.auth_token ) { authOK = true; } 
+            else { console.log(`Wrong token: '${token}'`); }
+        } 
+        else { console.log(`Not a bearer token: '${authHeaderList}'`); }
+    } else { console.log("No Authorization header"); }
+
+    if (authOK)
+    {
+        console.log("authOK");
+        return next();
+    } 
+    else 
+    {
+        console.log("authNOK");
+        res.status(401).json({message: "", errors: "Wrong authentication token"})
+    }
+}
+app.use(auth);
+
+
+
+// -------- Error Handling --------
+// Checks for undefined route errors and throws an 404
+//app.use(notFoundHandler);
 
 // Log all requests before further processing them
 app.use(httpLoggerMiddleware);
 
-// -------- Error Handling --------
-// Checks for undefined route errors and throws an 404
-app.use(notFoundHandler);
 
 // Handles database related errors
 app.use(DatabaseErrorHandler);
@@ -55,7 +77,7 @@ interface ValidationError {
     errors?: ValidationError[];
 }
 app.use(
-    (err: ValidationError, req: Request, res: Response, next: NextFunction) => {
+    (err: ValidationError, _req: Request, res: Response, next: NextFunction) => {
         res.status(err.status || 500).json(
             omitBy(
                 {
@@ -69,15 +91,28 @@ app.use(
     },
 );
 
+
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec: path.join(__dirname, "..", "specs", "spec.yml"),
+    validateRequests: true, 
+    validateResponses: false,
+    operationHandlers: path.join(__dirname, "services"),
+  }),
+);
+
+
 // Handles unhandled promises
 process.on("unhandledRejection", unhandledRejection);
 
 // Handles non operational errors
 process.on("uncaughtException", uncaughtException);
 
+
+
 // sync/create db tables if development
 if (config.env == "development"){
-   //db.sequelize.sync({alter: true, match: /^dev/})
+   db.sequelize.sync({alter: true, match: /^dev/})
 }
 
 

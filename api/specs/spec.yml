@@ -4,14 +4,14 @@ info:
   version: 1.0.0
 paths:
 
-  /qrcode/{qrcodeId}:
+  /qrcode/{codeId}:
     get:
       summary: Go to the final location of a qr code specified by the {qrID}
       x-eov-operation-id: getQRCodeById
       x-eov-operation-handler: qr
       parameters:
         - in: path
-          name: qrcodeId
+          name: codeId
           schema:
             type: integer
           required: true
@@ -28,7 +28,7 @@ paths:
       x-eov-operation-handler: qr
       parameters:
         - in: path
-          name: qrcodeId
+          name: codeId
           schema:
             type: integer
           required: true
@@ -36,6 +36,43 @@ paths:
       responses:
         '204':
           description: Code has been deleted
+        "404":
+            $ref: "#/components/responses/404"
+
+
+    put:
+      summary: Modify an existing QR code. If the QR code in question does not exist, one will be created
+      x-eov-operation-id: updateQRCode
+      x-eov-operation-handler: qr
+      parameters:
+        - in: path
+          name: codeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the QR code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRurl'
+
+      responses:
+        '200':
+          description: Modified QR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRfull'
+        '201':
+          description: The created QR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRfull'
+        "400":
+            $ref: "#/components/responses/400"
         "404":
             $ref: "#/components/responses/404"
 
@@ -53,7 +90,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/QR'
+                  $ref: '#/components/schemas/QRfull'
 
     post:
       summary: Create a new QR code
@@ -64,18 +101,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QRInput'
+              $ref: '#/components/schemas/QRurl'
       responses:
         '201':
           description: The created QR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QR'
+                $ref: '#/components/schemas/QRfull'
         "400":
             $ref: "#/components/responses/400"
         "404":
             $ref: "#/components/responses/404"
+
 
 
                   #put:
@@ -98,7 +136,7 @@ paths:
 
 components:
   schemas:
-    QR:
+    QRfull:
       type: object
       properties:
         id:
@@ -109,7 +147,7 @@ components:
         - id
         - url
 
-    QRInput:
+    QRurl:
       type: object
       properties:
         url:

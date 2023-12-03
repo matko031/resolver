@@ -8,7 +8,7 @@ export { _QR_code as QR_code }
 export type { QR_codeAttributes, QR_codeCreationAttributes }
 
 export function initModels (sequelize: Sequelize) {
-    const QR_code  = _QR_code.initModel(sequelize); 
+    const QR_code: typeof _QR_code  = _QR_code.initModel(sequelize); 
 
     return { QR_code };
 }

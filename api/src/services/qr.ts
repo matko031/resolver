@@ -2,11 +2,11 @@ import {Request, Response} from 'express';
 
 import {components} from "@self/types/api";
 import db from "@self/database";
+import auth from "@self/auth";
 const QR_code = db.QR_code;
 
 
-type QR_code_schema = components["schemas"]["QR"];
-type QRInput_schema = components["schemas"]["QRInput"];
+type QRurl_schema = components["schemas"]["QRurl"];
 
 
 
@@ -23,7 +23,8 @@ const getAllQRCodes =  async (req: Request, res: Response): Promise<void> => {
 
 const getQRCodeById =  async (req: Request, res: Response): Promise<void> => {
     try{
-        const code = await QR_code.findByPk(req.params.qrcodeId);
+        const id: number = Number(req.params.codeId);
+        const code = await QR_code.findByPk(id);
         if (code){
             let url: string = code.toJSON().url;
             if (!url.startsWith("https://")){
@@ -45,37 +46,72 @@ const getQRCodeById =  async (req: Request, res: Response): Promise<void> => {
 
 
 const createQRCode =  async (req: Request, res: Response): Promise<void> => {
-    const body: QRInput_schema = req.body;
-    try{
-        const newQR = await QR_code.create({"url": body.url});
+    if (! auth(req, res) )
+        return;
+
+    const body: QRurl_schema = req.body;
+    const url: string = body.url;
+
+    try {
+        const newQR = QR_code.build({"url": url});
+        await newQR.save();
         res.status(201).json(newQR.toJSON());
+        return;
     } catch (err) {
+        console.log(`Error while creating QR code with  url ${url}.`);
+        console.log(err);
         res.status(500).json(err);
     }
+
 }
 
 
+
 const deleteQRCodeById =  async (req: Request, res: Response): Promise<void> => {
+    if (! auth(req, res) )
+        return;
+
+    const id: number = Number(req.params.codeId);
+
     try{
-        const code = await QR_code.findByPk(req.params.qrcodeId);
+        const code = await QR_code.findByPk(id);
         if (code){
             code.destroy();
             res.status(204).send();
         } else {
-            res.status(404).json({error: "QR code with this id does not exist"});
+            res.status(404).json({error: `QR code with id ${id} does not exist`});
         }
     } catch (err) {
         res.status(500).json(err);
     }
 }
 
-const updateQRCode =  async (req: Request, res: Response) => {}
+const updateQRCode =  async (req: Request, res: Response) => {
+    if (! auth(req, res) )
+        return;
+
+    const id: string  = req.params.codeId;
+    const body: QRurl_schema = req.body;
+    const url: string = body.url;
+
+    const code = await QR_code.findByPk(id);
+    if (code === null) {
+      console.log(`PUT request for code with ${id}, code with that id not found, creating new code.`); 
+      createQRCode(req, res);
+    } else {
+      console.log(`PUT request for code with ${id}, code with that id found, updating code url.`); 
+      code.url = url;
+      code.save();
+      res.status(201).json(code.toJSON());
+    }
+}
 
 module.exports = {
     getAllQRCodes,
     getQRCodeById,
     createQRCode,
-    deleteQRCodeById
+    deleteQRCodeById,
+    updateQRCode
 }
 
 

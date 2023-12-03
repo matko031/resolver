@@ -4,7 +4,7 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "generate-types": "openapi-typescript openapi/spec.yml --output src/types/api.ts",
+      "generate-types": "openapi-typescript specs/spec.yml --output src/types/api.ts",
       "dev": "nodemon src/server.ts",
       "build": "tsc && tsc-alias && cpy specs/* ./lib",
       "start": "ts-node -r tsconfig-paths/register src/server",

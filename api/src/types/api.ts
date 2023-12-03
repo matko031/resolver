@@ -5,14 +5,78 @@
 
 
 export interface paths {
-  "/articles": {
+  "/qrcode/{codeId}": {
+    /** Go to the final location of a qr code specified by the {qrID} */
+    get: {
+      parameters: {
+        path: {
+          /** @description Numeric ID of the QR code */
+          codeId: number;
+        };
+      };
+      responses: {
+        /** @description Go to the URL pointed by the QR code */
+        302: {
+          content: never;
+        };
+        404: components["responses"]["404"];
+      };
+    };
+    /** Modify an existing QR code. If the QR code in question does not exist, one will be created */
+    put: {
+      parameters: {
+        path: {
+          /** @description Numeric ID of the QR code */
+          codeId: number;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components["schemas"]["QRurl"];
+        };
+      };
+      responses: {
+        /** @description Modified QR */
+        200: {
+          content: {
+            "application/json": components["schemas"]["QRfull"];
+          };
+        };
+        /** @description The created QR */
+        201: {
+          content: {
+            "application/json": components["schemas"]["QRfull"];
+          };
+        };
+        400: components["responses"]["400"];
+        404: components["responses"]["404"];
+      };
+    };
+    /** Delete a qr code */
+    delete: {
+      parameters: {
+        path: {
+          /** @description Numeric ID of the QR code */
+          codeId: number;
+        };
+      };
+      responses: {
+        /** @description Code has been deleted */
+        204: {
+          content: never;
+        };
+        404: components["responses"]["404"];
+      };
+    };
+  };
+  "/qrcode": {
     /** Get all the QR entries */
     get: {
       responses: {
         /** @description A list of IDs and URls */
         200: {
           content: {
-            "application/json": components["schemas"]["QR"][];
+            "application/json": components["schemas"]["QRfull"][];
           };
         };
       };
@@ -21,16 +85,18 @@ export interface paths {
     post: {
       requestBody: {
         content: {
-          "application/json": components["schemas"]["QRInput"];
+          "application/json": components["schemas"]["QRurl"];
         };
       };
       responses: {
         /** @description The created QR */
         201: {
           content: {
-            "application/json": components["schemas"]["QR"];
+            "application/json": components["schemas"]["QRfull"];
           };
         };
+        400: components["responses"]["400"];
+        404: components["responses"]["404"];
       };
     };
   };
@@ -40,15 +106,40 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    QR: {
-      id: string;
+    QRfull: {
+      id: number;
       url: string;
     };
-    QRInput: {
+    QRurl: {
       url: string;
+    };
+    "4xxBody": {
+      message?: string;
+      errors: {
+          message?: string;
+        }[];
     };
   };
-  responses: never;
+  responses: {
+    /** @description Bad request. */
+    400: {
+      content: {
+        "application/problem+json": components["schemas"]["4xxBody"];
+      };
+    };
+    /** @description Unauthorized. */
+    401: {
+      content: {
+        "application/problem+json": components["schemas"]["4xxBody"];
+      };
+    };
+    /** @description Not Found. */
+    404: {
+      content: {
+        "application/problem+json": components["schemas"]["4xxBody"];
+      };
+    };
+  };
   parameters: never;
   requestBodies: never;
   headers: never;

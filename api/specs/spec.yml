@@ -4,6 +4,21 @@ info:
   version: 1.0.0
 paths:
 
+  /docs:
+    get:
+      operationId: serveDocs
+      x-eov-operation-handler: docs
+      summary: Get API documentation.
+      description: Serves the documentation for this service.
+      responses:
+        "200":
+          description: OK. The API documentation.
+          content:
+            text/html:
+              schema:
+                type: string
+
+
   /qrcode/{codeId}:
     get:
       summary: Go to the final location of a qr code specified by the {qrID}
@@ -26,6 +41,8 @@ paths:
       summary: Delete a qr code
       x-eov-operation-id: deleteQRCodeById
       x-eov-operation-handler: qr
+      security:
+        - ApiKeyAuth: []
       parameters:
         - in: path
           name: codeId
@@ -44,6 +61,8 @@ paths:
       summary: Modify an existing QR code. If the QR code in question does not exist, one will be created
       x-eov-operation-id: updateQRCode
       x-eov-operation-handler: qr
+      security:
+        - ApiKeyAuth: []
       parameters:
         - in: path
           name: codeId
@@ -96,6 +115,8 @@ paths:
       summary: Create a new QR code
       x-eov-operation-id: createQRCode
       x-eov-operation-handler: qr
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -116,23 +137,6 @@ paths:
 
 
 
-                  #put:
-                  #  summary: Update an existing QR code
-                  #  x-eov-operation-id: updateQRCode
-                  #  x-eov-operation-handler: qr
-                  #  requestBody:
-                  #    required: true
-                  #    content:
-                  #      application/json:
-                  #        schema:
-                  #          $ref: '#/components/schemas/QRInput'
-                  #  responses:
-                  #    '200':
-                  #      description: Modified QR
-                  #      content:
-                  #        application/json:
-                  #          schema:
-                  #            $ref: '#/components/schemas/QR'
 
 components:
   schemas:
@@ -190,3 +194,9 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/4xxBody"
+
+  securitySchemes:
+      ApiKeyAuth:
+        type: apiKey
+        in: header
+        name: X-API-KEY  

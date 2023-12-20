@@ -13,13 +13,13 @@
 					"type": "apikey",
 					"apikey": [
 						{
-							"key": "key",
-							"value": "X-API-KEY",
+							"key": "value",
+							"value": "{{AUTH_TOKEN}}",
 							"type": "string"
 						},
 						{
-							"key": "value",
-							"value": "{{AUTH_token}}",
+							"key": "key",
+							"value": "X-API-KEY",
 							"type": "string"
 						}
 					]
@@ -36,11 +36,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/",
+					"raw": "https://{{HOST}}/",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "3000",
 					"path": [
 						""
 					]
@@ -54,11 +54,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/",
+					"raw": "https://{{HOST}}/",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "3000",
 					"path": [
 						""
 					]
@@ -73,13 +73,13 @@
 					"type": "apikey",
 					"apikey": [
 						{
-							"key": "key",
-							"value": "X-API-KEY",
+							"key": "value",
+							"value": "{{AUTH_TOKEN}}",
 							"type": "string"
 						},
 						{
-							"key": "value",
-							"value": "{{AUTH_token}}",
+							"key": "key",
+							"value": "X-API-KEY",
 							"type": "string"
 						}
 					]
@@ -87,18 +87,18 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/:codeId",
+					"raw": "https://{{HOST}}/:codeId",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "3000",
 					"path": [
 						":codeId"
 					],
 					"variable": [
 						{
 							"key": "codeId",
-							"value": "2"
+							"value": ""
 						}
 					]
 				}
@@ -112,13 +112,13 @@
 					"type": "apikey",
 					"apikey": [
 						{
-							"key": "key",
-							"value": "X-API-KEY",
+							"key": "value",
+							"value": "{{AUTH_TOKEN}}",
 							"type": "string"
 						},
 						{
-							"key": "value",
-							"value": "{{AUTH_token}}",
+							"key": "key",
+							"value": "X-API-KEY",
 							"type": "string"
 						}
 					]
@@ -135,18 +135,42 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/:CodeId",
+					"raw": "https://{{HOST}}/:codeId",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "3000",
 					"path": [
-						":CodeId"
+						":codeId"
 					],
 					"variable": [
 						{
-							"key": "CodeId",
-							"value": "3"
+							"key": "codeId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ResolveCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}/:codeId",
+					"protocol": "https",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						":codeId"
+					],
+					"variable": [
+						{
+							"key": "codeId",
+							"value": ""
 						}
 					]
 				}

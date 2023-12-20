@@ -19,7 +19,7 @@ paths:
                 type: string
 
 
-  /qrcode/{codeId}:
+  /{codeId}:
     get:
       summary: Go to the final location of a qr code specified by the {qrID}
       x-eov-operation-id: getQRCodeById
@@ -96,7 +96,7 @@ paths:
             $ref: "#/components/responses/404"
 
 
-  /qrcode:
+  /:
     get:
       summary: Get all the QR entries
       x-eov-operation-id: getAllQRCodes

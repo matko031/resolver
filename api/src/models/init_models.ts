@@ -1,16 +1,16 @@
 import type { Sequelize } from "sequelize";
-import { QR_code as _QR_code } from "./QR_code";
-import type { QR_codeAttributes, QR_codeCreationAttributes } from "./QR_code";
+import { entry as _entry } from "./entry";
+import type { entryAttributes, entryCreationAttributes } from "./entry";
 
 
-export { _QR_code as QR_code }
+export { _entry as entry }
 
-export type { QR_codeAttributes, QR_codeCreationAttributes }
+export type { entryAttributes, entryCreationAttributes }
 
 export function initModels (sequelize: Sequelize) {
-    const QR_code: typeof _QR_code  = _QR_code.initModel(sequelize); 
+    const entry: typeof _entry  = _entry.initModel(sequelize); 
 
-    return { QR_code };
+    return { entry };
 }
 
 

@@ -2,22 +2,22 @@ import * as Sequelize from "sequelize";
 
 import { DataTypes, Model, Optional, CreationOptional } from 'sequelize';
 
-export type QR_codeAttributes = {
+export type entryAttributes = {
     id: number,
     url: string
 }
 
-export type QR_codeCreationAttributes = Optional<QR_codeAttributes, "id">
+export type entryCreationAttributes = Optional<entryAttributes, "id">
 
-export class QR_code extends Model<QR_codeAttributes, QR_codeCreationAttributes> {
+export class entry extends Model<entryAttributes, entryCreationAttributes> {
     declare id: CreationOptional<number>;
     declare url: string;
 
 
-    static initModel(sequelize: Sequelize.Sequelize): typeof QR_code {
-        console.log("QR_code init model");
+    static initModel(sequelize: Sequelize.Sequelize): typeof entry {
+        console.log("entry init model");
         return sequelize.define(
-            "QR_code",
+            "entry",
             {
                 id: {
                     type: DataTypes.INTEGER,
@@ -31,9 +31,9 @@ export class QR_code extends Model<QR_codeAttributes, QR_codeCreationAttributes>
                 }
             },
             {
-                tableName: 'QR_code',
+                tableName: 'entry',
             }
-        ) as typeof QR_code;
+        ) as typeof entry;
     }
 }
 

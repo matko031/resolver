@@ -3,16 +3,16 @@ import {Request, Response} from 'express';
 import {components} from "@self/types/api";
 import db from "@self/database";
 import auth from "@self/auth";
-const QR_code = db.QR_code;
+const entry = db.entry;
 
 
-type QRurl_schema = components["schemas"]["QRurl"];
+type EntryUrl_schema = components["schemas"]["EntryUrl"];
 
 
 
-const getAllQRCodes =  async (req: Request, res: Response): Promise<void> => {
+const getAllEntries =  async (_: Request, res: Response): Promise<void> => {
     try{
-        const codes = await QR_code.findAll({raw: true});
+        const codes = await entry.findAll({raw: true});
         res.status(200).json(codes);
     }
      catch (err) {
@@ -21,10 +21,10 @@ const getAllQRCodes =  async (req: Request, res: Response): Promise<void> => {
 }
 
 
-const getQRCodeById =  async (req: Request, res: Response): Promise<void> => {
+const resolveEntryById =  async (req: Request, res: Response): Promise<void> => {
     try{
-        const id: number = Number(req.params.codeId);
-        const code = await QR_code.findByPk(id);
+        const id: number = Number(req.params.id);
+        const code = await entry.findByPk(id);
         if (code){
             let url: string = code.toJSON().url;
             if (!url.startsWith("https://")){
@@ -45,15 +45,15 @@ const getQRCodeById =  async (req: Request, res: Response): Promise<void> => {
 
 
 
-const createQRCode =  async (req: Request, res: Response): Promise<void> => {
+const createEntry =  async (req: Request, res: Response): Promise<void> => {
     if (! auth(req, res) )
         return;
 
-    const body: QRurl_schema = req.body;
+    const body: EntryUrl_schema = req.body;
     const url: string = body.url;
 
     try {
-        const newQR = QR_code.build({"url": url});
+        const newQR = entry.build({"url": url});
         await newQR.save();
         res.status(201).json(newQR.toJSON());
         return;
@@ -67,14 +67,14 @@ const createQRCode =  async (req: Request, res: Response): Promise<void> => {
 
 
 
-const deleteQRCodeById =  async (req: Request, res: Response): Promise<void> => {
+const deleteEntryById =  async (req: Request, res: Response): Promise<void> => {
     if (! auth(req, res) )
         return;
 
-    const id: number = Number(req.params.codeId);
+    const id: number = Number(req.params.id);
 
     try{
-        const code = await QR_code.findByPk(id);
+        const code = await entry.findByPk(id);
         if (code){
             code.destroy();
             res.status(204).send();
@@ -86,32 +86,32 @@ const deleteQRCodeById =  async (req: Request, res: Response): Promise<void> => 
     }
 }
 
-const updateQRCode =  async (req: Request, res: Response) => {
+const updateEntry =  async (req: Request, res: Response) => {
     if (! auth(req, res) )
         return;
 
-    const id: string  = req.params.codeId;
-    const body: QRurl_schema = req.body;
+    const id: string  = req.params.id;
+    const body: EntryUrl_schema = req.body;
     const url: string = body.url;
 
-    const code = await QR_code.findByPk(id);
+    const code = await entry.findByPk(id);
     if (code === null) {
       console.log(`PUT request for code with ${id}, code with that id not found, creating new code.`); 
-      createQRCode(req, res);
+      createEntry(req, res);
     } else {
       console.log(`PUT request for code with ${id}, code with that id found, updating code url.`); 
       code.url = url;
       code.save();
-      res.status(201).json(code.toJSON());
+      res.status(204).json(code.toJSON());
     }
 }
 
 module.exports = {
-    getAllQRCodes,
-    getQRCodeById,
-    createQRCode,
-    deleteQRCodeById,
-    updateQRCode
+    getAllEntries,
+    resolveEntryById,
+    createEntry,
+    deleteEntryById,
+    updateEntry
 }
 
 

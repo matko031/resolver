@@ -5,58 +5,65 @@
 
 
 export interface paths {
-  "/qrcode/{codeId}": {
-    /** Go to the final location of a qr code specified by the {qrID} */
+  "/docs": {
+    /**
+     * Get API documentation.
+     * @description Serves the documentation for this service.
+     */
+    get: operations["serveDocs"];
+  };
+  "/{id}": {
+    /** Go to the final location of the entry specified by the {id} */
     get: {
       parameters: {
         path: {
-          /** @description Numeric ID of the QR code */
+          /** @description Numeric ID of the entry to resolve */
           codeId: number;
         };
       };
       responses: {
-        /** @description Go to the URL pointed by the QR code */
+        /** @description Go to the URL pointed by the entry code */
         302: {
           content: never;
         };
         404: components["responses"]["404"];
       };
     };
-    /** Modify an existing QR code. If the QR code in question does not exist, one will be created */
+    /** Modify an existing entry. If the entry in question does not exist, one will be created */
     put: {
       parameters: {
         path: {
-          /** @description Numeric ID of the QR code */
+          /** @description Numeric ID of the entry */
           codeId: number;
         };
       };
       requestBody: {
         content: {
-          "application/json": components["schemas"]["QRurl"];
+          "application/json": components["schemas"]["EntryUrl"];
         };
       };
       responses: {
-        /** @description Modified QR */
+        /** @description Modified entry */
         200: {
           content: {
-            "application/json": components["schemas"]["QRfull"];
+            "application/json": components["schemas"]["EntryFull"];
           };
         };
-        /** @description The created QR */
+        /** @description The created entry */
         201: {
           content: {
-            "application/json": components["schemas"]["QRfull"];
+            "application/json": components["schemas"]["EntryFull"];
           };
         };
         400: components["responses"]["400"];
         404: components["responses"]["404"];
       };
     };
-    /** Delete a qr code */
+    /** Delete an entry */
     delete: {
       parameters: {
         path: {
-          /** @description Numeric ID of the QR code */
+          /** @description Numeric ID of the entry */
           codeId: number;
         };
       };
@@ -69,30 +76,30 @@ export interface paths {
       };
     };
   };
-  "/qrcode": {
-    /** Get all the QR entries */
+  "/": {
+    /** Get all the entries */
     get: {
       responses: {
         /** @description A list of IDs and URls */
         200: {
           content: {
-            "application/json": components["schemas"]["QRfull"][];
+            "application/json": components["schemas"]["EntryFull"][];
           };
         };
       };
     };
-    /** Create a new QR code */
+    /** Create a new entry */
     post: {
       requestBody: {
         content: {
-          "application/json": components["schemas"]["QRurl"];
+          "application/json": components["schemas"]["EntryUrl"];
         };
       };
       responses: {
-        /** @description The created QR */
+        /** @description The created entry */
         201: {
           content: {
-            "application/json": components["schemas"]["QRfull"];
+            "application/json": components["schemas"]["EntryFull"];
           };
         };
         400: components["responses"]["400"];
@@ -106,11 +113,11 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    QRfull: {
+    EntryFull: {
       id: number;
       url: string;
     };
-    QRurl: {
+    EntryUrl: {
       url: string;
     };
     "4xxBody": {
@@ -150,4 +157,20 @@ export type $defs = Record<string, never>;
 
 export type external = Record<string, never>;
 
-export type operations = Record<string, never>;
+export interface operations {
+
+  /**
+   * Get API documentation.
+   * @description Serves the documentation for this service.
+   */
+  serveDocs: {
+    responses: {
+      /** @description OK. The API documentation. */
+      200: {
+        content: {
+          "text/html": string;
+        };
+      };
+    };
+  };
+}

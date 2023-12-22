@@ -12,13 +12,13 @@ const defaultConfig: DailyRotateFile.DailyRotateFileTransportOptions = {
 };
 
 const combinedFileTransport: Transport = new DailyRotateFile({
-    filename: "api-dynamic-qr-combined-%DATE%.log",
+    filename: "api-resolver-combined-%DATE%.log",
     dirname: "./logs",
     options: defaultConfig,
 });
 
 const errorFileTransport: Transport = new DailyRotateFile({
-    filename: "api-dynamic-qr-errors-%DATE%.log",
+    filename: "api-resolver-errors-%DATE%.log",
     dirname: "./logs",
     options: {
         ...defaultConfig,
@@ -27,13 +27,13 @@ const errorFileTransport: Transport = new DailyRotateFile({
 });
 
 const exceptionFileTransport: Transport = new DailyRotateFile({
-    filename: "api-dynamic-qr-exception-%DATE%.log",
+    filename: "api-resolver-exception-%DATE%.log",
     dirname: "./logs",
     options: { ...defaultConfig, handleExceptions: true },
 });
 
 const rejectionFileTransport: Transport = new DailyRotateFile({
-    filename: "api-dynamic-qr-rejection-%DATE%.log",
+    filename: "api-resolver-rejection-%DATE%.log",
     dirname: "./logs",
     options: {
         ...defaultConfig,

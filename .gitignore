@@ -4,5 +4,5 @@ lib/
 logs/
 .env
 coverage
-jest.config.js
 dist
+*.log

@@ -45,4 +45,4 @@ jobs:
         path: ./node_modules
         key: node-modules
     - name: Run tests
-      run: yarn run test
+      run: npx jest

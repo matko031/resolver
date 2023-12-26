@@ -34,6 +34,7 @@ jobs:
     
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: Download node_modules
       uses: actions/download-artifact@master

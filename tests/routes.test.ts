@@ -1,6 +1,6 @@
-import app from "@self/app";
-//import server from "@self/server";
 import request from "supertest";
+
+import app from "@self/app";
 import db from '@self/database';
 
 describe("Test routes", () => {

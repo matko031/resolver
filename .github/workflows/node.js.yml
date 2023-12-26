@@ -30,6 +30,8 @@ jobs:
         key: node-modules
     - name: Build project
       run: yarn run build
+    - name: Run tests
+      run: yarn run test
 
   test:
     runs-on: ubuntu-latest

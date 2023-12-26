@@ -15,12 +15,13 @@
         "preserveWatchOutput": true,
         "skipLibCheck": true,
         "assumeChangesOnlyAffectDirectDependencies": true,
-        "outDir": "lib",
+        "outDir": "./dist",
         "baseUrl": ".",
         "rootDir": ".",
         "paths": {
             "@self/*": ["./src/*"],
-            "@models/*": ["./src/models/*"]
+            "@models/*": ["./src/models/*"],
+            "@root/*": ["./*"]
         }
     },
     "parserOptions": {

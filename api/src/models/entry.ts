@@ -15,7 +15,6 @@ export class entry extends Model<entryAttributes, entryCreationAttributes> {
 
 
     static initModel(sequelize: Sequelize.Sequelize): typeof entry {
-        console.log("entry init model");
         return sequelize.define(
             "entry",
             {

@@ -2,9 +2,9 @@ import { Dialect } from "sequelize";
 import { config as DotEnvConfig } from "dotenv";
 DotEnvConfig();
 
-export type Environment = "development" | "production" | "test";
+type Environment = "development" | "production" | "test";
 
-export type EnvironmentVariables = {
+type EnvironmentVariables = {
     readonly env: Environment;
     readonly port: number;
     readonly database_name: string;
@@ -19,14 +19,14 @@ type EnvironmentConfig <T> = {
     [K in Environment]: T;
 };
 
-export type Unparsed = Partial<EnvironmentVariables>;
+type Unparsed = Partial<EnvironmentVariables>;
 
-export const getEnv = (): Environment =>
+const getEnv = (): Environment =>
     (process.env.NODE_ENV as Environment) || "development";
 
 // Loading process.env as ENV interface
 
-export const getConfig = (node_env: string): Unparsed => {
+const getConfig = (node_env: string): Unparsed => {
 
     // config shared for all environments
     const generalConfig = {
@@ -62,7 +62,7 @@ export const getConfig = (node_env: string): Unparsed => {
 // run if it can't connect to DB and ensure that these fields are accessible.
 // If all is good return it as Config which just removes the undefined from our
 // type definition.
-export const assertNonNullable = (variables: Unparsed) => {
+const assertNonNullable = (variables: Unparsed) => {
     Object.keys(variables).forEach((key: string) => {
         if (!variables[key as keyof EnvironmentVariables]) {
             throw new Error(`Missing key ${key} in config`);

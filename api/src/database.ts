@@ -9,6 +9,7 @@ const sequelize: Sequelize = new Sequelize({
     host: config.database_host,
     dialect: config.database_dialect,
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
+    logging: false
 } as Options);
 
 const db = {

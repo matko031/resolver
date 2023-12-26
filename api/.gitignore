@@ -3,3 +3,6 @@ node_modules/
 lib/
 logs/
 .env
+coverage
+jest.config.js
+dist

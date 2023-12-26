@@ -61,6 +61,8 @@ paths:
       responses:
         '204':
           description: Code has been deleted
+        "401":
+            $ref: "#/components/responses/401"
         "404":
             $ref: "#/components/responses/404"
 
@@ -100,6 +102,8 @@ paths:
                 $ref: '#/components/schemas/EntryFull'
         "400":
             $ref: "#/components/responses/400"
+        "401":
+            $ref: "#/components/responses/401"
         "404":
             $ref: "#/components/responses/404"
 
@@ -140,6 +144,8 @@ paths:
                 $ref: '#/components/schemas/EntryFull'
         "400":
             $ref: "#/components/responses/400"
+        "401":
+            $ref: "#/components/responses/401"
         "404":
             $ref: "#/components/responses/404"
 

@@ -29,7 +29,8 @@
         "tsconfigRootDir": ".",
         "sourceType": "module"
     },
-    "include": ["./src/**/*.ts", "./tests/**/*.test.ts"],
+    "include": ["./src/**/*.ts"],
+    "exclude": ["tests"],
     "compileOnSave": false
 }
 

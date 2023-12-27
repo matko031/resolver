@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import config from "@self/environment";
+import logger from "@self/logging/logger";
 
 // API key authentication
 const auth = (req: Request, res: Response) => {
@@ -21,15 +22,14 @@ const auth = (req: Request, res: Response) => {
     let authOK = false;
     const token = req.get("X-API-KEY");
     if ( token && token === config.auth_token ) { authOK = true; } 
-    else { console.log(`Wrong token: '${token}'`); }
 
     if (authOK)
     {
-        console.log("authOK");
+        logger.debug("authOK");
     } 
     else 
     {
-        console.log("authNOK");
+        logger.debug(`Wrong token: '${token}'`);
         res.status(401).json({message: "", errors: "Wrong authentication token"})
     }
 

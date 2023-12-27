@@ -21,7 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
     container_name: resolver-db
     volumes:
-      - ./deb-db/persistent_storage:/var/lib/mysql
+      - ./dev-db/persistent_storage:/var/lib/mysql
     expose:
       - '3306'
     ports:

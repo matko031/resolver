@@ -23,13 +23,15 @@ jobs:
         cache: 'yarn'
     - name: Install dependencies
       run: yarn
-    #- name: Cache dependencies
-    #  uses: actions/cache@v3
-    #  with:
-    #    path: ./node_modules
-    #    key: node-modules
-    #- name: Build project
-    #  run: yarn run build
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: node-modules
+    - name: Run database
+      run: docker compose -f docker-compose-cicd.yml up -d
+    - name: Build project
+      run: yarn run build
     - name: Run tests
       run: npx jest
 

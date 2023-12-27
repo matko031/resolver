@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+
+  database:
+    build:
+      context: ./dev-db
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    container_name: resolver-db
+    expose:
+      - '3306'
+    ports:
+      - 3306:3306
+
+
+
+

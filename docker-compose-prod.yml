@@ -1,0 +1,14 @@
+version: "3.1"
+services:
+  resolver:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: amodamo-resolver-api
+    command: bash -c "yarn run openapi:build && yarn run build && yarn run serve"
+
+
+
+

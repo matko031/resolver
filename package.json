@@ -10,7 +10,8 @@
       "start": "ts-node -r tsconfig-paths/register src/server",
       "serve": "node -r tsconfig-paths/register dist/src/server.js",
       "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
-      "test": "jest"
+      "test": "jest",
+      "prettier:format": "prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
    },
    "keywords": [],
    "author": "",

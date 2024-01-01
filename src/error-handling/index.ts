@@ -1,17 +1,18 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from 'express'
 import {
     dbError,
     HttpError,
     HttpStatusCode,
     MethodNotAllowed,
     NotFound,
-} from "./httpErrors";
+} from './httpErrors'
+import logger from '@self/logging/logger'
 import {
     BaseError,
     ForeignKeyConstraintError,
     TimeoutError,
     UniqueConstraintError,
-} from "sequelize";
+} from 'sequelize'
 
 /**
  * @desc Centralized error handling middleware
@@ -26,19 +27,21 @@ class ErrorHandler {
         //   await sendEventsToSentry();
 
         if (err instanceof HttpError) {
-            res?.status(err.httpCode).json(err);
+            logger.warn(`HttpError ${err.httpCode}: ${err}`)
+            res?.status(err.httpCode).json(err)
         }
 
         if (!res?.headersSent) {
-            res?.status(500).json(err);
+            logger.error(`Server error: ${err}`)
+            res?.status(500).json(err)
         }
     }
 
     public isTrustedError(error: Error): boolean {
         if (error instanceof HttpError) {
-            return error.isOperational;
+            return error.isOperational
         }
-        return false;
+        return false
     }
 }
 
@@ -54,18 +57,20 @@ export const allowedHttpMethods =
     (methods: string[]): RequestHandler =>
     (request: Request, response: Response, next: NextFunction): void => {
         if (!methods.includes(request.method)) {
+            const msg = `${request.method.toString()} request is not allowed at ${request.originalUrl.toString()}`
+            logger.warn(msg)
             return next(
                 new MethodNotAllowed(
                     {
-                        msg: `${request.method.toString()} request is not allowed at ${request.originalUrl.toString()}`,
+                        msg: msg,
                     },
-                    true,
-                ),
-            );
+                    true
+                )
+            )
         }
 
-        return next();
-    };
+        return next()
+    }
 
 /**
  * @desc Handles database errors
@@ -80,16 +85,16 @@ export const DatabaseErrorHandler = (
     error: Error,
     request: Request,
     response: Response,
-    next: NextFunction,
+    next: NextFunction
 ): void => {
     if (error instanceof TimeoutError) {
         return next(
             new dbError(
                 HttpStatusCode.GATEWAY_TIMEOUT,
                 { message: error.message },
-                true,
-            ),
-        );
+                true
+            )
+        )
     } else if (error instanceof UniqueConstraintError) {
         return next(
             new dbError(
@@ -99,9 +104,9 @@ export const DatabaseErrorHandler = (
                     errors: error.errors,
                     fields: error.fields,
                 },
-                true,
-            ),
-        );
+                true
+            )
+        )
     } else if (error instanceof ForeignKeyConstraintError) {
         return next(
             new dbError(
@@ -113,9 +118,9 @@ export const DatabaseErrorHandler = (
                     value: error.value,
                     index: error.index,
                 },
-                true,
-            ),
-        );
+                true
+            )
+        )
     } else if (error instanceof BaseError) {
         return next(
             new dbError(
@@ -123,13 +128,13 @@ export const DatabaseErrorHandler = (
                 {
                     message: error.message,
                 },
-                true,
-            ),
-        );
+                true
+            )
+        )
     }
 
-    return next(error);
-};
+    return next(error)
+}
 
 /**
  * @desc Handles the 404 undefined routes
@@ -143,21 +148,21 @@ export const DatabaseErrorHandler = (
 export const notFoundHandler = (
     request: Request,
     response: Response,
-    next: NextFunction,
+    next: NextFunction
 ): any => {
     // new instance of NotFound Error object
-    const notFound = new NotFound({ path: request.path.toString() }, true);
+    const notFound = new NotFound({ path: request.path.toString() }, true)
 
     // This is to avoid the error `Headers already sent` error
     if (response.headersSent) {
-        return next();
+        return next()
     }
 
     // Log the 404 as an operational error
-    console.info(`Error 404. Cannot find ${request.path.toString()} route.`);
+    console.info(`Error 404. Cannot find ${request.path.toString()} route.`)
 
-    return response.status(404).json(notFound);
-};
+    return response.status(404).json(notFound)
+}
 
 /**
  * @async
@@ -173,27 +178,27 @@ export const trustedError = (
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
 ): any => {
-    const trusted = errorHandler.isTrustedError(err);
+    const trusted = errorHandler.isTrustedError(err)
     const info: string = trusted
         ? ((err as HttpError).error as string)
-        : err.message;
+        : err.message
 
-    console.error(
+    logger.error(
         JSON.stringify({
-            from: "Error message from the centralized error-handling component.",
+            from: 'Error message from the centralized error-handling component.',
             info,
             name: err.name,
             stack: err.stack,
-        }),
-    );
+        })
+    )
 
     if (!trusted) {
-        return next(err);
+        return next(err)
     }
-    return errorHandler.handleError(err, res);
-};
+    return errorHandler.handleError(err, res)
+}
 
 /**
  * @desc If a promise throws an error then use this middleware
@@ -204,10 +209,11 @@ export const trustedError = (
  */
 export const unhandledRejection = (
     reason: Error,
-    promise: Promise<any>,
+    promise: Promise<any>
 ): void => {
-    throw reason;
-};
+    logger.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`)
+    throw reason
+}
 
 /**
  * @desc If error non operational then crash the app
@@ -215,21 +221,21 @@ export const unhandledRejection = (
  * @exports uncaughtException
  */
 export const uncaughtException = (error: Error): void => {
-    console.log(error);
-    errorHandler.handleError(error);
+    logger.error(error)
+    errorHandler.handleError(error)
     if (!errorHandler.isTrustedError(error)) {
-        new Promise(() => process.exit(1)); // Crash the app if fatal error
+        new Promise(() => process.exit(1)) // Crash the app if fatal error
 
         // If a graceful shutdown is not achieved after 1 second,
         // shut down the process completely
         setTimeout(() => {
-            process.abort(); // exit immediately and generate a core dump file
-        }, 1000).unref();
+            process.abort() // exit immediately and generate a core dump file
+        }, 1000).unref()
     }
-};
+}
 
 /**
  * @desc exports an instance of the ErrorHandler object
  * @exports errorHandler
  */
-export const errorHandler = new ErrorHandler();
+export const errorHandler = new ErrorHandler()

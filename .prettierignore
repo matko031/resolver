@@ -1,0 +1,9 @@
+package-lock.json
+src/types/openapi.gen.ts
+lib/
+**/README.md
+coverage/
+images/
+logs/
+.gitlab
+public/

@@ -1,39 +1,36 @@
-import * as Sequelize from "sequelize";
+import * as Sequelize from 'sequelize'
 
-import { DataTypes, Model, Optional, CreationOptional } from 'sequelize';
+import { DataTypes, Model, Optional, CreationOptional } from 'sequelize'
 
 export type entryAttributes = {
-    id: number,
+    id: number
     url: string
 }
 
-export type entryCreationAttributes = Optional<entryAttributes, "id">
+export type entryCreationAttributes = Optional<entryAttributes, 'id'>
 
 export class entry extends Model<entryAttributes, entryCreationAttributes> {
-    declare id: CreationOptional<number>;
-    declare url: string;
-
+    declare id: CreationOptional<number>
+    declare url: string
 
     static initModel(sequelize: Sequelize.Sequelize): typeof entry {
         return sequelize.define(
-            "entry",
+            'entry',
             {
                 id: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                     primaryKey: true,
-                    autoIncrement: true, 
+                    autoIncrement: true,
                 },
                 url: {
                     type: DataTypes.STRING,
-                    allowNull: true
-                }
+                    allowNull: true,
+                },
             },
             {
                 tableName: 'entry',
             }
-        ) as typeof entry;
+        ) as typeof entry
     }
 }
-
-

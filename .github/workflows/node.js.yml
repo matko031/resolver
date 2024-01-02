@@ -8,6 +8,8 @@ on:
 
   workflow_dispatch:
 
+env:
+  NODE_ENV: cicd
 jobs:
   build:
 

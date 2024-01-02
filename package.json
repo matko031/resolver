@@ -10,7 +10,8 @@
       "start": "ts-node -r tsconfig-paths/register src/server",
       "serve": "node -r tsconfig-paths/register dist/src/server.js",
       "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
-      "test": "docker exec -t resolver-api npx jest",
+      "test:dev": "docker exec -t resolver-api npx jest",
+      "test:cicd": "npx jest",
       "prettier:format": "prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
       "prettier:check": "prettier --check \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
    },

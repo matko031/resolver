@@ -1,6 +1,7 @@
 import request from "supertest";
 import app from "@self/app";
 import db from '@self/database';
+import config from '@self/environment'
 
 describe("Test routes", () => {
     beforeAll(async () => {
@@ -11,7 +12,6 @@ describe("Test routes", () => {
     const res = await request(app).get("/");
     expect(res.body).toEqual([]);
   });
-
 
   test("Test create, auth OK", async () => {
     let res;
@@ -101,7 +101,6 @@ describe("Test routes", () => {
     expect(res.body.length).toEqual(2);
     expect(res.body[0].destinationURL).toEqual('gmail.com');
   });
-
 
   afterAll( async () => {
     await db.sequelize.close();

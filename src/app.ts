@@ -28,14 +28,14 @@ app.use(express.json())
 //app.use(notFoundHandler);
 
 // Log all requests before further processing them
-app.use(httpLoggerMiddleware)
+//app.use(httpLoggerMiddleware)
 
 // Handles database related errors
 //app.use(DatabaseErrorHandler)
 
 // Checks if the error is operational or not
 // Also logs the errors
-app.use(trustedError)
+//app.use(trustedError)
 
 interface ValidationError {
     status?: number
@@ -72,10 +72,10 @@ app.use(
 )
 
 // Handles unhandled promises
-process.on('unhandledRejection', unhandledRejection)
+//process.on('unhandledRejection', unhandledRejection)
 
 // Handles non operational errors
-process.on('uncaughtException', uncaughtException)
+//process.on('uncaughtException', uncaughtException)
 
 // sync/create db tables if development
 if (config.env == 'development') {

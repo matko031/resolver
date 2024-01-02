@@ -15,7 +15,6 @@ type DigitalLinkFull_schema = components['schemas']['DigitalLinkFull']
 type DigitalLinkURL_schema = components['schemas']['DigitalLinkURL']
 
 const getAllEntries = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
-    next(new BadRequest("test", false));
     try {
         const codes = await DigitalLink.findAll({ raw: true })
         res.status(200).json(codes)

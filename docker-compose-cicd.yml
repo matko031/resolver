@@ -6,7 +6,7 @@ services:
       context: ./dev-db
       dockerfile: Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: root
     container_name: resolver-db
     expose:
       - '3306'

@@ -8,8 +8,7 @@ if (process.env.NODE_ENV == 'test') {
 } else if (process.env.NODE_ENV == 'test') {
     const env_path = path.resolve(__dirname, '..', '.env.cicd')
     DotEnvConfig({ path: env_path })
-}
-else {
+} else {
     DotEnvConfig()
 }
 

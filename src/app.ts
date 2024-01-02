@@ -21,7 +21,7 @@ const app = express()
 app.use(express.json())
 
 // Filters http methods before routing
-app.use(allowedHttpMethods(['GET', 'POST', 'DELETE', 'PUT']))
+//app.use(allowedHttpMethods(['GET', 'POST', 'DELETE', 'PUT']))
 
 // -------- Error Handling --------
 // Checks for undefined route errors and throws an 404
@@ -31,7 +31,7 @@ app.use(allowedHttpMethods(['GET', 'POST', 'DELETE', 'PUT']))
 app.use(httpLoggerMiddleware)
 
 // Handles database related errors
-app.use(DatabaseErrorHandler)
+//app.use(DatabaseErrorHandler)
 
 // Checks if the error is operational or not
 // Also logs the errors

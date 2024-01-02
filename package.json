@@ -11,7 +11,8 @@
       "serve": "node -r tsconfig-paths/register dist/src/server.js",
       "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
       "test": "jest",
-      "prettier:format": "prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
+      "prettier:format": "prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
+      "prettier:check": "prettier --check \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
    },
    "keywords": [],
    "author": "",

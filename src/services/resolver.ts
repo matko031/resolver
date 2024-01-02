@@ -1,14 +1,17 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
 import { components } from '@self/types/api'
 import db from '@self/database'
 import auth from '@self/auth'
 import logger from '@self/logging/logger'
+import {BadRequest} from '@self/error-handling/httpErrors'
+
 const entry = db.entry
 
 type EntryUrl_schema = components['schemas']['EntryUrl']
 
-const getAllEntries = async (_: Request, res: Response): Promise<void> => {
+const getAllEntries = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
+    next(new BadRequest("test", false));
     try {
         const codes = await entry.findAll({ raw: true })
         res.status(200).json(codes)

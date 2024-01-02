@@ -181,6 +181,7 @@ export const trustedError = (
     next: NextFunction
 ): any => {
     const trusted = errorHandler.isTrustedError(err)
+    console.log("matko", trusted);
     const info: string = trusted
         ? ((err as HttpError).error as string)
         : err.message
@@ -224,7 +225,7 @@ export const uncaughtException = (error: Error): void => {
     logger.error(error)
     errorHandler.handleError(error)
     if (!errorHandler.isTrustedError(error)) {
-        new Promise(() => process.exit(1)) // Crash the app if fatal error
+        process.exit(1) // Crash the app if fatal error
 
         // If a graceful shutdown is not achieved after 1 second,
         // shut down the process completely

@@ -3,178 +3,176 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/docs": {
+    '/docs': {
+        /**
+         * Get API documentation.
+         * @description Serves the documentation for this service.
+         */
+        get: operations['serveDocs']
+    }
+    '/01/{gtin}': {
+        /** Go to the final location of the DigitalLink specified by the {gtin} */
+        get: {
+            parameters: {
+                path: {
+                    /** @description Numeric gtin of the DigitalLink to resolve */
+                    gtin: number
+                }
+            }
+            responses: {
+                /** @description Go to the URL pointed by the DigitalLink code */
+                302: {
+                    content: never
+                }
+                404: components['responses']['404']
+            }
+        }
+        /** Modify an existing DigitalLink. If the DigitalLink in question does not exist, one will be created */
+        put: {
+            parameters: {
+                path: {
+                    /** @description Numeric gtin of the DigitalLink */
+                    gtin: number
+                }
+            }
+            requestBody: {
+                content: {
+                    'application/json': components['schemas']['DigitalLinkURL']
+                }
+            }
+            responses: {
+                /** @description Modified DigitalLink */
+                200: {
+                    content: {
+                        'application/json': components['schemas']['DigitalLinkFull']
+                    }
+                }
+                /** @description The created DigitalLink */
+                201: {
+                    content: {
+                        'application/json': components['schemas']['DigitalLinkFull']
+                    }
+                }
+                400: components['responses']['400']
+                401: components['responses']['401']
+                404: components['responses']['404']
+            }
+        }
+        /** Delete an DigitalLink */
+        delete: {
+            parameters: {
+                path: {
+                    /** @description Numeric gtin of the DigitalLink */
+                    gtin: number
+                }
+            }
+            responses: {
+                /** @description Code has been deleted */
+                204: {
+                    content: never
+                }
+                401: components['responses']['401']
+                404: components['responses']['404']
+            }
+        }
+    }
+    '/': {
+        /** Get all the entries */
+        get: {
+            responses: {
+                /** @description A list of gtins and URls */
+                200: {
+                    content: {
+                        'application/json': components['schemas']['DigitalLinkFull'][]
+                    }
+                }
+            }
+        }
+        /** Create a new DigitalLink */
+        post: {
+            requestBody: {
+                content: {
+                    'application/json': components['schemas']['DigitalLinkURL']
+                }
+            }
+            responses: {
+                /** @description The created DigitalLink */
+                201: {
+                    content: {
+                        'application/json': components['schemas']['DigitalLinkFull']
+                    }
+                }
+                400: components['responses']['400']
+                401: components['responses']['401']
+                404: components['responses']['404']
+            }
+        }
+    }
+}
+
+export type webhooks = Record<string, never>
+
+export interface components {
+    schemas: {
+        DigitalLinkFull: {
+            /** Format: int64 */
+            gtin: number
+            destinationURL: string
+        }
+        DigitalLinkURL: {
+            destinationURL: string
+        }
+        '4xxBody': {
+            message?: string
+            errors: {
+                message?: string
+            }[]
+        }
+    }
+    responses: {
+        /** @description Bad request. */
+        400: {
+            content: {
+                'application/problem+json': components['schemas']['4xxBody']
+            }
+        }
+        /** @description Unauthorized. */
+        401: {
+            content: {
+                'application/problem+json': components['schemas']['4xxBody']
+            }
+        }
+        /** @description Not Found. */
+        404: {
+            content: {
+                'application/problem+json': components['schemas']['4xxBody']
+            }
+        }
+    }
+    parameters: never
+    requestBodies: never
+    headers: never
+    pathItems: never
+}
+
+export type $defs = Record<string, never>
+
+export type external = Record<string, never>
+
+export interface operations {
     /**
      * Get API documentation.
      * @description Serves the documentation for this service.
      */
-    get: operations["serveDocs"];
-  };
-  "/01/{gtin}": {
-    /** Go to the final location of the DigitalLink specified by the {gtin} */
-    get: {
-      parameters: {
-        path: {
-          /** @description Numeric gtin of the DigitalLink to resolve */
-          gtin: number;
-        };
-      };
-      responses: {
-        /** @description Go to the URL pointed by the DigitalLink code */
-        302: {
-          content: never;
-        };
-        404: components["responses"]["404"];
-      };
-    };
-    /** Modify an existing DigitalLink. If the DigitalLink in question does not exist, one will be created */
-    put: {
-      parameters: {
-        path: {
-          /** @description Numeric gtin of the DigitalLink */
-          gtin: number;
-        };
-      };
-      requestBody: {
-        content: {
-          "application/json": components["schemas"]["DigitalLinkURL"];
-        };
-      };
-      responses: {
-        /** @description Modified DigitalLink */
-        200: {
-          content: {
-            "application/json": components["schemas"]["DigitalLinkFull"];
-          };
-        };
-        /** @description The created DigitalLink */
-        201: {
-          content: {
-            "application/json": components["schemas"]["DigitalLinkFull"];
-          };
-        };
-        400: components["responses"]["400"];
-        401: components["responses"]["401"];
-        404: components["responses"]["404"];
-      };
-    };
-    /** Delete an DigitalLink */
-    delete: {
-      parameters: {
-        path: {
-          /** @description Numeric gtin of the DigitalLink */
-          gtin: number;
-        };
-      };
-      responses: {
-        /** @description Code has been deleted */
-        204: {
-          content: never;
-        };
-        401: components["responses"]["401"];
-        404: components["responses"]["404"];
-      };
-    };
-  };
-  "/": {
-    /** Get all the entries */
-    get: {
-      responses: {
-        /** @description A list of gtins and URls */
-        200: {
-          content: {
-            "application/json": components["schemas"]["DigitalLinkFull"][];
-          };
-        };
-      };
-    };
-    /** Create a new DigitalLink */
-    post: {
-      requestBody: {
-        content: {
-          "application/json": components["schemas"]["DigitalLinkURL"];
-        };
-      };
-      responses: {
-        /** @description The created DigitalLink */
-        201: {
-          content: {
-            "application/json": components["schemas"]["DigitalLinkFull"];
-          };
-        };
-        400: components["responses"]["400"];
-        401: components["responses"]["401"];
-        404: components["responses"]["404"];
-      };
-    };
-  };
-}
-
-export type webhooks = Record<string, never>;
-
-export interface components {
-  schemas: {
-    DigitalLinkFull: {
-      /** Format: int64 */
-      gtin: number;
-      destinationURL: string;
-    };
-    DigitalLinkURL: {
-      destinationURL: string;
-    };
-    "4xxBody": {
-      message?: string;
-      errors: {
-          message?: string;
-        }[];
-    };
-  };
-  responses: {
-    /** @description Bad request. */
-    400: {
-      content: {
-        "application/problem+json": components["schemas"]["4xxBody"];
-      };
-    };
-    /** @description Unauthorized. */
-    401: {
-      content: {
-        "application/problem+json": components["schemas"]["4xxBody"];
-      };
-    };
-    /** @description Not Found. */
-    404: {
-      content: {
-        "application/problem+json": components["schemas"]["4xxBody"];
-      };
-    };
-  };
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
-}
-
-export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
-export interface operations {
-
-  /**
-   * Get API documentation.
-   * @description Serves the documentation for this service.
-   */
-  serveDocs: {
-    responses: {
-      /** @description OK. The API documentation. */
-      200: {
-        content: {
-          "text/html": string;
-        };
-      };
-    };
-  };
+    serveDocs: {
+        responses: {
+            /** @description OK. The API documentation. */
+            200: {
+                content: {
+                    'text/html': string
+                }
+            }
+        }
+    }
 }

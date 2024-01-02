@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Dynamic resolver redirection API
-  description: A resolver that redirects to final destination URL based on the given ID. Supports resolution, creation, deletion, and modification of entries
+  description: A resolver that redirects to final destination URL based on the given gtin. Supports resolution, creation, deletion, and modification of entries
   version: 0.0.1
   license:
     name: ISC
@@ -27,37 +27,37 @@ paths:
                 type: string
 
 
-  /{id}:
+  /01/{gtin}:
     get:
-      summary: Go to the final location of the entry specified by the {id}
-      x-eov-operation-id: resolveEntryById
+      summary: Go to the final location of the DigitalLink specified by the {gtin}
+      x-eov-operation-id: resolveDigitalLinkByGtin
       x-eov-operation-handler: resolver 
       parameters:
         - in: path
-          name: id
+          name: gtin
           schema:
             type: integer
           required: true
-          description: Numeric ID of the entry to resolve
+          description: Numeric gtin of the DigitalLink to resolve
       responses:
         '302':
-          description: Go to the URL pointed by the entry code
+          description: Go to the URL pointed by the DigitalLink code
         "404":
             $ref: "#/components/responses/404"
 
     delete:
-      summary: Delete an entry
-      x-eov-operation-id: deleteEntryById
+      summary: Delete an DigitalLink
+      x-eov-operation-id: deleteDigitalLinkByGtin
       x-eov-operation-handler: resolver 
       security:
         - ApiKeyAuth: []
       parameters:
         - in: path
-          name: id
+          name: gtin
           schema:
             type: integer
           required: true
-          description: Numeric ID of the entry
+          description: Numeric gtin of the DigitalLink
       responses:
         '204':
           description: Code has been deleted
@@ -68,38 +68,38 @@ paths:
 
 
     put:
-      summary: Modify an existing entry. If the entry in question does not exist, one will be created
-      x-eov-operation-id: updateEntry
+      summary: Modify an existing DigitalLink. If the DigitalLink in question does not exist, one will be created
+      x-eov-operation-id: updateDigitalLink
       x-eov-operation-handler: resolver 
       security:
         - ApiKeyAuth: []
       parameters:
         - in: path
-          name: id
+          name: gtin
           schema:
             type: integer
           required: true
-          description: Numeric ID of the entry
+          description: Numeric gtin of the DigitalLink
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntryUrl'
+              $ref: '#/components/schemas/DigitalLinkURL'
 
       responses:
         '200':
-          description: Modified entry 
+          description: Modified DigitalLink 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EntryFull'
+                $ref: '#/components/schemas/DigitalLinkFull'
         '201':
-          description: The created entry 
+          description: The created DigitalLink 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EntryFull'
+                $ref: '#/components/schemas/DigitalLinkFull'
         "400":
             $ref: "#/components/responses/400"
         "401":
@@ -115,17 +115,17 @@ paths:
       x-eov-operation-handler: resolver
       responses:
         '200':
-          description: A list of IDs and URls
+          description: A list of gtins and URls
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EntryFull'
+                  $ref: '#/components/schemas/DigitalLinkFull'
 
     post:
-      summary: Create a new entry
-      x-eov-operation-id: createEntry
+      summary: Create a new DigitalLink
+      x-eov-operation-id: createDigitalLink
       x-eov-operation-handler: resolver
       security:
         - ApiKeyAuth: []
@@ -134,14 +134,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntryUrl'
+              $ref: '#/components/schemas/DigitalLinkURL'
       responses:
         '201':
-          description: The created entry
+          description: The created DigitalLink
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EntryFull'
+                $ref: '#/components/schemas/DigitalLinkFull'
         "400":
             $ref: "#/components/responses/400"
         "401":
@@ -154,24 +154,25 @@ paths:
 
 components:
   schemas:
-    EntryFull:
+    DigitalLinkFull:
       type: object
       properties:
-        id:
+        gtin:
           type: number
-        url:
+          format: int64
+        destinationURL:
           type: string
       required:
-        - id
-        - url
+        - gtin 
+        - destinationURL 
 
-    EntryUrl:
+    DigitalLinkURL:
       type: object
       properties:
-        url:
+        destinationURL:
           type: string
       required:
-        - url
+        - destinationURL
 
     "4xxBody":
       type: object

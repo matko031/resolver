@@ -7,9 +7,15 @@ export type DigitalLinkAttributes = {
     destinationURL: string
 }
 
-export type DigitalLinkCreationAttributes = Optional<DigitalLinkAttributes, 'gtin'>
+export type DigitalLinkCreationAttributes = Optional<
+    DigitalLinkAttributes,
+    'gtin'
+>
 
-export class DigitalLink extends Model<DigitalLinkAttributes, DigitalLinkCreationAttributes> {
+export class DigitalLink extends Model<
+    DigitalLinkAttributes,
+    DigitalLinkCreationAttributes
+> {
     declare gtin: CreationOptional<number>
     declare destinationURL: string
 

@@ -55,11 +55,11 @@ describe("Test routes", () => {
 
   test("Test resolve", async () => {
     const res = await request(app)
-        .get("/01/1")
+        .get("/01/1?1=2&a=b&query=test")
         .set('Content-Type', 'application/json')
         .send()
     expect(res.status).toEqual(301);
-    expect(res.headers["location"]).toMatch('https://google.com');
+    expect(res.headers["location"]).toMatch('https://google.com/?1=2&a=b&query=test');
   });
 
   test("Test create, auth NOK", async () => {

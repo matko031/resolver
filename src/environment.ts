@@ -1,14 +1,13 @@
 import { Dialect } from 'sequelize'
-import path from "path"
+import path from 'path'
 import { config as DotEnvConfig } from 'dotenv'
 
-if (process.env.NODE_ENV == "test"){
-    const env_path = path.resolve(__dirname, '..', ".env.test");
-    DotEnvConfig({ path: env_path});
+if (process.env.NODE_ENV == 'test') {
+    const env_path = path.resolve(__dirname, '..', '.env.test')
+    DotEnvConfig({ path: env_path })
 } else {
     DotEnvConfig()
 }
-
 
 type Environment = 'development' | 'production' | 'test'
 

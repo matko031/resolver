@@ -1,6 +1,9 @@
 import type { Sequelize } from 'sequelize'
 import { DigitalLink as _DigitalLink } from './DigitalLink'
-import type { DigitalLinkAttributes, DigitalLinkCreationAttributes } from './DigitalLink'
+import type {
+    DigitalLinkAttributes,
+    DigitalLinkCreationAttributes,
+} from './DigitalLink'
 
 export { _DigitalLink as DigitalLink }
 

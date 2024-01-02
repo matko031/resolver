@@ -87,6 +87,7 @@ export const DatabaseErrorHandler = (
     response: Response,
     next: NextFunction
 ): void => {
+    console.log('db error handler')
     if (error instanceof TimeoutError) {
         return next(
             new dbError(
@@ -146,6 +147,7 @@ export const DatabaseErrorHandler = (
  * @exports notFoundHandler
  */
 export const notFoundHandler = (
+    error: Error,
     request: Request,
     response: Response,
     next: NextFunction
@@ -159,7 +161,7 @@ export const notFoundHandler = (
     }
 
     // Log the 404 as an operational error
-    console.info(`Error 404. Cannot find ${request.path.toString()} route.`)
+    logger.info(`Error 404. Cannot find ${request.path.toString()} route.`)
 
     return response.status(404).json(notFound)
 }
@@ -181,7 +183,7 @@ export const trustedError = (
     next: NextFunction
 ): any => {
     const trusted = errorHandler.isTrustedError(err)
-    console.log("matko", trusted);
+    console.log('matko', trusted)
     const info: string = trusted
         ? ((err as HttpError).error as string)
         : err.message

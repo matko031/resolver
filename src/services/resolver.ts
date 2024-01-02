@@ -1,20 +1,21 @@
 import { Request, Response, NextFunction } from 'express'
-import {
-    ForeignKeyConstraintError,
-    UniqueConstraintError,
-} from 'sequelize'
+import { ForeignKeyConstraintError, UniqueConstraintError } from 'sequelize'
 
 import { components } from '@self/types/api'
 import db from '@self/database'
 import auth from '@self/auth'
 import logger from '@self/logging/logger'
-import {BadRequest} from '@self/error-handling/httpErrors'
+import { BadRequest } from '@self/error-handling/httpErrors'
 const DigitalLink = db.DigitalLink
 
 type DigitalLinkFull_schema = components['schemas']['DigitalLinkFull']
 type DigitalLinkURL_schema = components['schemas']['DigitalLinkURL']
 
-const getAllEntries = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
+const getAllEntries = async (
+    _: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const codes = await DigitalLink.findAll({ raw: true })
         res.status(200).json(codes)
@@ -23,23 +24,31 @@ const getAllEntries = async (_: Request, res: Response, next: NextFunction): Pro
     }
 }
 
-const resolveDigitalLinkByGtin = async (req: Request, res: Response): Promise<void> => {
+const resolveDigitalLinkByGtin = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
     try {
         const gtin: number = Number(req.params.gtin)
-        const code = await DigitalLink.findByPk(gtin)
-        if (code) {
-            let destinationURL: string = code.toJSON().destinationURL
-            if (!destinationURL.startsWith('https://')) {
-                if (!destinationURL.startsWith('http://')) {
-                    destinationURL = 'https://' + destinationURL
-                } else {
-                    destinationURL = destinationURL.replace('http', 'https')
-                }
+        const destinationLink = await DigitalLink.findByPk(gtin)
+        if (destinationLink) {
+            const destinationURL_ = destinationLink.toJSON().destinationURL
+
+            const destinationURL: URL = new URL(
+                destinationURL_.startsWith('http')
+                    ? destinationURL_
+                    : `https://${destinationURL_}`
+            )
+            destinationURL.search = new URLSearchParams(
+                req.query as any
+            ).toString()
+            if (!destinationURL.protocol) {
+                destinationURL.protocol = 'https'
             }
-            res.redirect(301, destinationURL)
+            res.redirect(301, destinationURL.toString())
         } else {
             res.status(404).json({
-                error: 'QR code with this gtin does not exist',
+                error: 'Digital Link with this gtin does not exist',
             })
         }
     } catch (err) {
@@ -48,7 +57,10 @@ const resolveDigitalLinkByGtin = async (req: Request, res: Response): Promise<vo
     }
 }
 
-const createDigitalLink = async (req: Request, res: Response): Promise<void> => {
+const createDigitalLink = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
     if (!auth(req, res)) return
 
     const body: DigitalLinkFull_schema = req.body
@@ -56,24 +68,32 @@ const createDigitalLink = async (req: Request, res: Response): Promise<void> => 
     const gtin: number = body.gtin
 
     try {
-        const newQR = DigitalLink.build({ gtin: gtin, destinationURL: destinationURL })
+        const newQR = DigitalLink.build({
+            gtin: gtin,
+            destinationURL: destinationURL,
+        })
         await newQR.save()
         res.status(201).json(newQR.toJSON())
         return
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
-            const msg = `Entry with gtin ${gtin} already exists.` 
+            const msg = `Entry with gtin ${gtin} already exists.`
             logger.warn(msg)
             res.status(400).json(msg)
         } else {
-            logger.error(`Error while creating QR code with  destinationURL ${destinationURL}.`)
+            logger.error(
+                `Error while creating QR code with  destinationURL ${destinationURL}.`
+            )
             logger.error(err)
             res.status(500).json(err)
         }
     }
 }
 
-const deleteDigitalLinkByGtin = async (req: Request, res: Response): Promise<void> => {
+const deleteDigitalLinkByGtin = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
     if (!auth(req, res)) return
 
     const gtin: number = Number(req.params.gtin)
@@ -123,4 +143,3 @@ module.exports = {
     deleteDigitalLinkByGtin,
     updateDigitalLink,
 }
-

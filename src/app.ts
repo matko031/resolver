@@ -18,24 +18,30 @@ import {
 } from '@self/error-handling/index'
 
 const app = express()
+
+// Handles unhandled promises
+process.on('unhandledRejection', unhandledRejection)
+
+// Handles non operational errors
+process.on('uncaughtException', uncaughtException)
+
 app.use(express.json())
 
-// Filters http methods before routing
-//app.use(allowedHttpMethods(['GET', 'POST', 'DELETE', 'PUT']))
-
-// -------- Error Handling --------
-// Checks for undefined route errors and throws an 404
-//app.use(notFoundHandler);
-
 // Log all requests before further processing them
-//app.use(httpLoggerMiddleware)
+app.use(httpLoggerMiddleware)
+
+// Filters http methods before routing
+app.use(allowedHttpMethods(['GET', 'POST', 'DELETE', 'PUT']))
 
 // Handles database related errors
-//app.use(DatabaseErrorHandler)
+app.use(DatabaseErrorHandler)
+
+// Checks for undefined route errors and throws an 404
+app.use(notFoundHandler)
 
 // Checks if the error is operational or not
 // Also logs the errors
-//app.use(trustedError)
+app.use(trustedError)
 
 interface ValidationError {
     status?: number
@@ -65,17 +71,13 @@ app.use(
 app.use(
     OpenApiValidator.middleware({
         apiSpec: path.join(__dirname, '..', 'specs', 'spec.yml'),
-        validateRequests: true,
+        validateRequests: {
+            allowUnknownQueryParameters: true,
+        },
         validateResponses: false,
         operationHandlers: path.join(__dirname, 'services'),
     })
 )
-
-// Handles unhandled promises
-//process.on('unhandledRejection', unhandledRejection)
-
-// Handles non operational errors
-//process.on('uncaughtException', uncaughtException)
 
 // sync/create db tables if development
 if (config.env == 'development') {

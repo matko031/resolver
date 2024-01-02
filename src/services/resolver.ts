@@ -1,39 +1,44 @@
 import { Request, Response } from 'express'
+import {
+    ForeignKeyConstraintError,
+    UniqueConstraintError,
+} from 'sequelize'
 
 import { components } from '@self/types/api'
 import db from '@self/database'
 import auth from '@self/auth'
 import logger from '@self/logging/logger'
-const entry = db.entry
+const DigitalLink = db.DigitalLink
 
-type EntryUrl_schema = components['schemas']['EntryUrl']
+type DigitalLinkFull_schema = components['schemas']['DigitalLinkFull']
+type DigitalLinkURL_schema = components['schemas']['DigitalLinkURL']
 
 const getAllEntries = async (_: Request, res: Response): Promise<void> => {
     try {
-        const codes = await entry.findAll({ raw: true })
+        const codes = await DigitalLink.findAll({ raw: true })
         res.status(200).json(codes)
     } catch (err) {
         res.status(500).json(err)
     }
 }
 
-const resolveEntryById = async (req: Request, res: Response): Promise<void> => {
+const resolveDigitalLinkByGtin = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id: number = Number(req.params.id)
-        const code = await entry.findByPk(id)
+        const gtin: number = Number(req.params.gtin)
+        const code = await DigitalLink.findByPk(gtin)
         if (code) {
-            let url: string = code.toJSON().url
-            if (!url.startsWith('https://')) {
-                if (!url.startsWith('http://')) {
-                    url = 'https://' + url
+            let destinationURL: string = code.toJSON().destinationURL
+            if (!destinationURL.startsWith('https://')) {
+                if (!destinationURL.startsWith('http://')) {
+                    destinationURL = 'https://' + destinationURL
                 } else {
-                    url = url.replace('http', 'https')
+                    destinationURL = destinationURL.replace('http', 'https')
                 }
             }
-            res.redirect(301, url)
+            res.redirect(301, destinationURL)
         } else {
             res.status(404).json({
-                error: 'QR code with this id does not exist',
+                error: 'QR code with this gtin does not exist',
             })
         }
     } catch (err) {
@@ -42,37 +47,44 @@ const resolveEntryById = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const createEntry = async (req: Request, res: Response): Promise<void> => {
+const createDigitalLink = async (req: Request, res: Response): Promise<void> => {
     if (!auth(req, res)) return
 
-    const body: EntryUrl_schema = req.body
-    const url: string = body.url
+    const body: DigitalLinkFull_schema = req.body
+    const destinationURL: string = body.destinationURL
+    const gtin: number = body.gtin
 
     try {
-        const newQR = entry.build({ url: url })
+        const newQR = DigitalLink.build({ gtin: gtin, destinationURL: destinationURL })
         await newQR.save()
         res.status(201).json(newQR.toJSON())
         return
     } catch (err) {
-        logger.error(`Error while creating QR code with  url ${url}.`)
-        logger.error(err)
-        res.status(500).json(err)
+        if (err instanceof UniqueConstraintError) {
+            const msg = `Entry with gtin ${gtin} already exists.` 
+            logger.warn(msg)
+            res.status(400).json(msg)
+        } else {
+            logger.error(`Error while creating QR code with  destinationURL ${destinationURL}.`)
+            logger.error(err)
+            res.status(500).json(err)
+        }
     }
 }
 
-const deleteEntryById = async (req: Request, res: Response): Promise<void> => {
+const deleteDigitalLinkByGtin = async (req: Request, res: Response): Promise<void> => {
     if (!auth(req, res)) return
 
-    const id: number = Number(req.params.id)
+    const gtin: number = Number(req.params.gtin)
 
     try {
-        const code = await entry.findByPk(id)
+        const code = await DigitalLink.findByPk(gtin)
         if (code) {
             code.destroy()
             res.status(204).send()
         } else {
             res.status(404).json({
-                error: `QR code with id ${id} does not exist`,
+                error: `QR code with gtin ${gtin} does not exist`,
             })
         }
     } catch (err) {
@@ -80,24 +92,24 @@ const deleteEntryById = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const updateEntry = async (req: Request, res: Response) => {
+const updateDigitalLink = async (req: Request, res: Response) => {
     if (!auth(req, res)) return
 
-    const id: string = req.params.id
-    const body: EntryUrl_schema = req.body
-    const url: string = body.url
+    const gtin: string = req.params.gtin
+    const body: DigitalLinkURL_schema = req.body
+    const destinationURL: string = body.destinationURL
 
-    const code = await entry.findByPk(id)
+    const code = await DigitalLink.findByPk(gtin)
     if (code === null) {
         logger.info(
-            `PUT request for code with ${id}, code with that id not found, creating new code.`
+            `PUT request for code with ${gtin}, code with that gtin not found, creating new code.`
         )
-        createEntry(req, res)
+        createDigitalLink(req, res)
     } else {
         logger.info(
-            `PUT request for code with ${id}, code with that id found, updating code url.`
+            `PUT request for code with ${gtin}, code with that gtin found, updating code destinationURL.`
         )
-        code.url = url
+        code.destinationURL = destinationURL
         code.save()
         res.status(204).json(code.toJSON())
     }
@@ -105,18 +117,9 @@ const updateEntry = async (req: Request, res: Response) => {
 
 module.exports = {
     getAllEntries,
-    resolveEntryById,
-    createEntry,
-    deleteEntryById,
-    updateEntry,
+    resolveDigitalLinkByGtin,
+    createDigitalLink,
+    deleteDigitalLinkByGtin,
+    updateDigitalLink,
 }
 
-/*
-app.post("/articles", (req: Request, res: Response) => {
-  const articleInput: ArticleInput = req.body;
-  const newArticle: Article = { ...articleInput, id: "1" };
-
-  articles.push(newArticle);
-  res.status(201).json(newArticle);
-});
-*/

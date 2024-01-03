@@ -9,7 +9,9 @@
       "build": "docker exec -t resolver-api npx tsc && docker exec -t resolver-api npx tsc-alias && docker exec -t resolver-api npx cpy specs/* ./dist",
       "start": "docker exec -t resolver-api ts-node -r tsconfig-paths/register src/server",
       "serve": "docker exec -t resolver-api node -r tsconfig-paths/register dist/src/server.js",
-      "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
+      "openapi:build": "docker exec -t resolver-api npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
+      "serve": "npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html && npx tsc && npx tsc-alias && npx cpy specs/* .env.prod ./dist && node -r tsconfig-paths/register dist/src/server.js",
+
       "test": "docker exec -t resolver-api npx jest",
       "prettier:format": "docker exec -t resolver-api npx prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
       "prettier:check": "docker exec -t resolver-api npx prettier --check \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""

@@ -6,8 +6,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    container_name: amodamo-resolver-api
-    command: bash -c "yarn run openapi:build && yarn run build && yarn run serve"
+    container_name: resolver-api
+    environment:
+      NODE_ENV: production
+    command: yarn run serve
+
+
 
 
 

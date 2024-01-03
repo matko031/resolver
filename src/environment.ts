@@ -12,7 +12,7 @@ if (process.env.NODE_ENV == 'test') {
 }
 DotEnvConfig({ path: env_path })
 
-type Environment = 'development' | 'production' | 'test' 
+type Environment = 'development' | 'production' | 'test'
 
 type EnvironmentVariables = {
     readonly env: Environment
@@ -62,7 +62,7 @@ const getConfig = (node_env: string): Unparsed => {
             env: 'test',
             port: process.env.PORT ? Number(process.env.PORT) : 3000,
             ...generalConfig,
-        }
+        },
     }
     return environments[node_env as Environment]
 }

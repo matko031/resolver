@@ -21,7 +21,7 @@ jobs:
     - name: Check formatting with Prettier
       run: yarn prettier:check
     - name: Build project
-      run: yarn run build
+      run: yarn build
     - name: Run tests
       run: yarn test
 

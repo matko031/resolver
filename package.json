@@ -6,9 +6,9 @@
    "scripts": {
       "generate-types": "openapi-typescript specs/spec.yml --output src/types/api.ts",
       "dev": "nodemon src/server.ts",
-      "build": "tsc && tsc-alias && cpy specs/* ./dist",
-      "start": "ts-node -r tsconfig-paths/register src/server",
-      "serve": "node -r tsconfig-paths/register dist/src/server.js",
+      "build": "docker exec -t resolver-api npx tsc && docker exec -t resolver-api npx tsc-alias && docker exec -t resolver-api npx cpy specs/* ./dist",
+      "start": "docker exec -t resolver-api ts-node -r tsconfig-paths/register src/server",
+      "serve": "docker exec -t resolver-api node -r tsconfig-paths/register dist/src/server.js",
       "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
       "test": "docker exec -t resolver-api npx jest",
       "prettier:format": "docker exec -t resolver-api npx prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",

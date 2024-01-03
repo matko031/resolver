@@ -2,15 +2,15 @@ import { Dialect } from 'sequelize'
 import path from 'path'
 import { config as DotEnvConfig } from 'dotenv'
 
-let env_path;
+let env_path
 if (process.env.NODE_ENV == 'test') {
-     env_path = path.resolve(__dirname, '..', '.env.test')
+    env_path = path.resolve(__dirname, '..', '.env.test')
 } else if (process.env.NODE_ENV == 'cicd') {
-     env_path = path.resolve(__dirname, '..', '.env.cicd')
+    env_path = path.resolve(__dirname, '..', '.env.cicd')
 } else if (process.env.NODE_ENV == 'development') {
-     env_path = path.resolve(__dirname, '..', '.env.dev')
+    env_path = path.resolve(__dirname, '..', '.env.dev')
 } else {
-     env_path = path.resolve(__dirname, '..', '.env.prod')
+    env_path = path.resolve(__dirname, '..', '.env.prod')
 }
 DotEnvConfig({ path: env_path })
 

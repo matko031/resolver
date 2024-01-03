@@ -1,33 +1,42 @@
-import { Dialect } from "sequelize";
-import { config as DotEnvConfig } from "dotenv";
-DotEnvConfig();
+import { Dialect } from 'sequelize'
+import path from 'path'
+import { config as DotEnvConfig } from 'dotenv'
 
-type Environment = "development" | "production" | "test";
+let env_path
+if (process.env.NODE_ENV == 'test') {
+    env_path = path.resolve(__dirname, '..', '.env.test')
+} else if (process.env.NODE_ENV == 'development') {
+    env_path = path.resolve(__dirname, '..', '.env.dev')
+} else {
+    env_path = path.resolve(__dirname, '..', '.env.prod')
+}
+DotEnvConfig({ path: env_path })
+
+type Environment = 'development' | 'production' | 'test'
 
 type EnvironmentVariables = {
-    readonly env: Environment;
-    readonly port: number;
-    readonly database_name: string;
-    readonly database_username: string;
-    readonly database_password: string;
-    readonly database_host: string;
-    readonly database_dialect: Dialect;
-    readonly auth_token: string;
-};
+    readonly env: Environment
+    readonly port: number
+    readonly database_name: string
+    readonly database_username: string
+    readonly database_password: string
+    readonly database_host: string
+    readonly database_dialect: Dialect
+    readonly auth_token: string
+}
 
-type EnvironmentConfig <T> = {
-    [K in Environment]: T;
-};
+type EnvironmentConfig<T> = {
+    [K in Environment]: T
+}
 
-type Unparsed = Partial<EnvironmentVariables>;
+type Unparsed = Partial<EnvironmentVariables>
 
 const getEnv = (): Environment =>
-    (process.env.NODE_ENV as Environment) || "development";
+    (process.env.NODE_ENV as Environment) || 'development'
 
 // Loading process.env as ENV interface
 
 const getConfig = (node_env: string): Unparsed => {
-
     // config shared for all environments
     const generalConfig = {
         database_name: process.env.DATABASE_NAME!,
@@ -35,28 +44,28 @@ const getConfig = (node_env: string): Unparsed => {
         database_password: process.env.DATABASE_PASSWORD!,
         database_host: process.env.DATABASE_HOST!,
         database_dialect: process.env.DATABASE_DIALECT as Dialect,
-        auth_token: process.env.AUTH_TOKEN!
+        auth_token: process.env.AUTH_TOKEN!,
     }
 
     const environments: EnvironmentConfig<Unparsed> = {
         development: {
-            env: "development",
+            env: 'development',
             port: process.env.PORT ? Number(process.env.PORT) : 3000,
-            ...generalConfig
+            ...generalConfig,
         },
         production: {
-            env: "production",
+            env: 'production',
             port: Number(process.env.PORT),
-            ...generalConfig
+            ...generalConfig,
         },
         test: {
-            env: "test",
+            env: 'test',
             port: process.env.PORT ? Number(process.env.PORT) : 3000,
-            ...generalConfig
+            ...generalConfig,
         },
-    };
-    return environments[node_env as Environment];
-};
+    }
+    return environments[node_env as Environment]
+}
 
 // Throwing an Error if any field was undefined we don't want our app to
 // run if it can't connect to DB and ensure that these fields are accessible.
@@ -65,12 +74,11 @@ const getConfig = (node_env: string): Unparsed => {
 const assertNonNullable = (variables: Unparsed) => {
     Object.keys(variables).forEach((key: string) => {
         if (!variables[key as keyof EnvironmentVariables]) {
-            throw new Error(`Missing key ${key} in config`);
+            throw new Error(`Missing key ${key} in config`)
         }
-    });
-};
+    })
+}
 
-const config: Unparsed = getConfig(getEnv());
-assertNonNullable(config);
-export default config;
-
+const config: Unparsed = getConfig(getEnv())
+assertNonNullable(config)
+export default config

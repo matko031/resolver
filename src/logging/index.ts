@@ -1,5 +1,5 @@
-import logger from "./logger";
-import { httpLoggerMiddleware } from "./HttpLoggerMiddleware";
+import logger from './logger'
+import { httpLoggerMiddleware } from './HttpLoggerMiddleware'
 
-export { httpLoggerMiddleware };
-export default logger;
+export { httpLoggerMiddleware }
+export default logger

@@ -1,16 +1,16 @@
-import type { Sequelize } from "sequelize";
-import { entry as _entry } from "./entry";
-import type { entryAttributes, entryCreationAttributes } from "./entry";
+import type { Sequelize } from 'sequelize'
+import { DigitalLink as _DigitalLink } from './DigitalLink'
+import type {
+    DigitalLinkAttributes,
+    DigitalLinkCreationAttributes,
+} from './DigitalLink'
 
+export { _DigitalLink as DigitalLink }
 
-export { _entry as entry }
+export type { DigitalLinkAttributes, DigitalLinkCreationAttributes }
 
-export type { entryAttributes, entryCreationAttributes }
+export function initModels(sequelize: Sequelize) {
+    const DigitalLink: typeof _DigitalLink = _DigitalLink.initModel(sequelize)
 
-export function initModels (sequelize: Sequelize) {
-    const entry: typeof _entry  = _entry.initModel(sequelize); 
-
-    return { entry };
+    return { DigitalLink }
 }
-
-

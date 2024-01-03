@@ -6,7 +6,7 @@ services:
       context: ./dev-db
       dockerfile: Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: root
     container_name: resolver-db
     expose:
       - '3306'
@@ -16,6 +16,23 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 5s
       retries: 10
+
+  resolver:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: resolver-api
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - database
+    tty: true
+
+
+
+
 
 
 

@@ -6,11 +6,13 @@
    "scripts": {
       "generate-types": "openapi-typescript specs/spec.yml --output src/types/api.ts",
       "dev": "nodemon src/server.ts",
-      "build": "tsc && tsc-alias && cpy specs/* ./dist",
-      "start": "ts-node -r tsconfig-paths/register src/server",
-      "serve": "node -r tsconfig-paths/register dist/src/server.js",
+      "build": "docker exec -t resolver-api npx tsc && docker exec -t resolver-api npx tsc-alias && docker exec -t resolver-api npx cpy specs/* ./dist",
+      "start": "docker exec -t resolver-api ts-node -r tsconfig-paths/register src/server",
+      "serve": "docker exec -t resolver-api node -r tsconfig-paths/register dist/src/server.js",
       "openapi:build": "redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
-      "test": "jest"
+      "test": "docker exec -t resolver-api npx jest",
+      "prettier:format": "docker exec -t resolver-api npx prettier --write \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
+      "prettier:check": "docker exec -t resolver-api npx prettier --check \"src/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
    },
    "keywords": [],
    "author": "",
@@ -19,6 +21,7 @@
       "@redocly/cli": "^1.5.0",
       "@types/lodash": "^4.14.198",
       "@types/morgan": "^1.9.5",
+      "@types/node": "^20.10.6",
       "@types/ua-parser-js": "^0.7.37",
       "axios": "^1.6.2",
       "cpy": "^10.1.0",

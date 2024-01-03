@@ -9,6 +9,8 @@ services:
     volumes:
       - ./:/home/node/app/
     container_name: resolver-api
+    environment:
+      NODE_ENV: development
     command: npm run dev
     depends_on:
       - database
@@ -18,7 +20,7 @@ services:
       context: ./dev-db
       dockerfile: Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: root
     container_name: resolver-db
     volumes:
       - ./dev-db/persistent_storage:/var/lib/mysql

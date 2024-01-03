@@ -16,23 +16,13 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.10.0
-        cache: 'yarn'
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: node-modules
-    - name: Install dependencies
-      run: yarn
-    - name: Run database
+    - name: Run docker containers
       run: docker compose -f docker-compose-cicd.yml up -d --wait
+    - name: Check formatting with Prettier
+      run: yarn prettier:check
     - name: Build project
-      run: yarn run build
+      run: yarn build
     - name: Run tests
-      run: npx jest
+      run: yarn test
 
  

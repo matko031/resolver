@@ -63,6 +63,11 @@ const getConfig = (node_env: string): Unparsed => {
             port: process.env.PORT ? Number(process.env.PORT) : 3000,
             ...generalConfig,
         },
+        cicd: {
+            env: 'cicd',
+            port: process.env.PORT ? Number(process.env.PORT) : 3000,
+            ...generalConfig,
+        },
     }
     return environments[node_env as Environment]
 }

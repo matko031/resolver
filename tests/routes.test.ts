@@ -19,7 +19,7 @@ describe("Test routes", () => {
     res = await request(app)
         .post("/")
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', process.env.AUTH_TOKEN as string)
+        .set('X-API-KEY', config.auth_token as string)
         .send('{"gtin": 1, "destinationURL":"google.com"}')
     expect(res.status).toEqual(201);
     expect(res.body.destinationURL).toEqual('google.com');
@@ -27,7 +27,7 @@ describe("Test routes", () => {
     res = await request(app)
         .post("/")
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', process.env.AUTH_TOKEN as string)
+        .set('X-API-KEY', config.auth_token as string)
         .send('{"gtin": 24, "destinationURL":"gmail.com"}')
     expect(res.status).toEqual(201);
     expect(res.body.destinationURL).toEqual('gmail.com');
@@ -35,7 +35,7 @@ describe("Test routes", () => {
     res = await request(app)
         .post("/")
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', process.env.AUTH_TOKEN as string)
+        .set('X-API-KEY', config.auth_token as string)
         .send('{"gtin": 999999999999999, "destinationURL":"tagshaper.com"}')
     expect(res.status).toEqual(201);
     expect(res.body.destinationURL).toEqual('tagshaper.com');
@@ -48,7 +48,7 @@ describe("Test routes", () => {
     res = await request(app)
         .post("/")
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', process.env.AUTH_TOKEN as string)
+        .set('X-API-KEY', config.auth_token as string)
         .send('{"gtin": 1, "destinationURL":"google.com"}')
     expect(res.status).toEqual(400);
   });
@@ -93,7 +93,7 @@ describe("Test routes", () => {
 
     res = await request(app)
         .delete("/01/1")
-        .set('X-API-KEY', process.env.AUTH_TOKEN as string)
+        .set('X-API-KEY', config.auth_token as string)
         .send()
     expect(res.status).toEqual(204);
 

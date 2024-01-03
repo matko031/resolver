@@ -6,6 +6,6 @@ module.exports = {
     '^@self/(.*)$': '<rootDir>/src/$1',
     '^@models/(.*)$': '<rootDir>/src/models/$1',
   },
- //setupFiles: ['<rootDir>/tests/setup.ts'],
+ setupFiles: ['<rootDir>/tests/setup.ts'],
  testMatch: ["<rootDir>/tests/**/*.test.ts"]
 };

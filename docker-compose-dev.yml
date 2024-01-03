@@ -9,6 +9,8 @@ services:
     volumes:
       - ./:/home/node/app/
     container_name: resolver-api
+    environment:
+      NODE_ENV: development
     command: npm run dev
     depends_on:
       - database

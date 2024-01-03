@@ -2,7 +2,7 @@ node_modules/
 .git/
 lib/
 logs/
-.env
+.env.prod
 coverage
 dist
 *.log

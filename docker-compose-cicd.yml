@@ -17,6 +17,23 @@ services:
       timeout: 5s
       retries: 10
 
+  resolver:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: resolver-api
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - database
+    tty: true
+
+
+
+
+
 
 
 

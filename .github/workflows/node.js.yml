@@ -8,8 +8,6 @@ on:
 
   workflow_dispatch:
 
-env:
-  NODE_ENV: cicd
 jobs:
   build:
 
@@ -18,20 +16,13 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.10.0
-        cache: 'yarn'
-    - name: Install dependencies
-      run: yarn
+    - name: Run docker containers
+      run: docker compose -f docker-compose-cicd.yml up -d --wait
     - name: Check formatting with Prettier
       run: yarn prettier:check
-    - name: Run database
-      run: docker compose -f docker-compose-cicd.yml up -d --wait
     - name: Build project
       run: yarn run build
     - name: Run tests
-      run: npx jest
+      run: yarn test
 
  

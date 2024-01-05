@@ -57,6 +57,38 @@ const resolveDigitalLinkByGtin = async (
     }
 }
 
+const resolveDigitalLinkBySerialId = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const gtin: number = Number(req.params.gtin)
+        const serialId: number = Number(req.params.serialId)
+        const destinationLink = await DigitalLink.findByPk(gtin)
+        if (destinationLink) {
+            const destinationURL_ =
+                destinationLink.toJSON().destinationURL + '/' + serialId
+
+            const destinationURL: URL = new URL(
+                destinationURL_.startsWith('http')
+                    ? destinationURL_
+                    : `https://${destinationURL_}`
+            )
+            destinationURL.search = new URLSearchParams(
+                req.query as any
+            ).toString()
+            res.redirect(301, destinationURL.toString())
+        } else {
+            res.status(404).json({
+                error: 'Digital Link with this gtin does not exist',
+            })
+        }
+    } catch (err) {
+        logger.error(err)
+        res.status(500).json(err)
+    }
+}
+
 const createDigitalLink = async (
     req: Request,
     res: Response
@@ -139,6 +171,7 @@ const updateDigitalLink = async (req: Request, res: Response) => {
 module.exports = {
     getAllEntries,
     resolveDigitalLinkByGtin,
+    resolveDigitalLinkBySerialId,
     createDigitalLink,
     deleteDigitalLinkByGtin,
     updateDigitalLink,

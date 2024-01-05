@@ -53,7 +53,7 @@ describe("Test routes", () => {
     expect(res.status).toEqual(400);
   });
 
-  test("Test resolve", async () => {
+  test("Test resolve by gtin only", async () => {
     const res = await request(app)
         .get("/01/1?1=2&a=b&query=test")
         .set('Content-Type', 'application/json')
@@ -61,6 +61,16 @@ describe("Test routes", () => {
     expect(res.status).toEqual(301);
     expect(res.headers["location"]).toMatch('https://google.com/?1=2&a=b&query=test');
   });
+
+  test("Test resolve by gtin and serialId", async () => {
+    const res = await request(app)
+        .get("/01/1/21/123?1=2&a=b&query=test")
+        .set('Content-Type', 'application/json')
+        .send()
+    expect(res.status).toEqual(301);
+    expect(res.headers["location"]).toMatch('https://google.com/123?1=2&a=b&query=test');
+  });
+
 
   test("Test create, auth NOK", async () => {
     const res = await request(app)

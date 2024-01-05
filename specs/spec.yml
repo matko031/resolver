@@ -107,6 +107,29 @@ paths:
         "404":
             $ref: "#/components/responses/404"
 
+  /01/{gtin}/21/{serialId}:
+    get:
+      summary: Go to the final location of the DigitalLink specified by the {gtin}
+      x-eov-operation-id: resolveDigitalLinkBySerialId
+      x-eov-operation-handler: resolver 
+      parameters:
+        - in: path
+          name: gtin
+          schema:
+            type: integer
+          required: true
+          description: Numeric gtin of the DigitalLink to resolve
+        - in: path
+          name: serialId
+          schema:
+            type: integer
+          required: true
+          description: Numeric serialId of the DigitalLink to resolve
+      responses:
+        '302':
+          description: Go to the URL pointed by the DigitalLink code
+        "404":
+            $ref: "#/components/responses/404"
 
   /:
     get:

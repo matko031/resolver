@@ -66,7 +66,8 @@ const resolveDigitalLinkBySerialId = async (
         const serialId: number = Number(req.params.serialId)
         const destinationLink = await DigitalLink.findByPk(gtin)
         if (destinationLink) {
-            const destinationURL_ = destinationLink.toJSON().destinationURL + "/" + serialId
+            const destinationURL_ =
+                destinationLink.toJSON().destinationURL + '/' + serialId
 
             const destinationURL: URL = new URL(
                 destinationURL_.startsWith('http')
@@ -87,7 +88,6 @@ const resolveDigitalLinkBySerialId = async (
         res.status(500).json(err)
     }
 }
-
 
 const createDigitalLink = async (
     req: Request,

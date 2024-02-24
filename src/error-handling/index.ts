@@ -215,8 +215,10 @@ export const unhandledRejection = (
     promise: Promise<any>
 ): void => {
     logger.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`)
-    throw reason
+    //throw reason
 }
+
+process.on('unhandledRejection', unhandledRejection)
 
 /**
  * @desc If error non operational then crash the app

@@ -6,16 +6,24 @@ import db from '@self/database'
 import auth from '@self/auth'
 import logger from '@self/logging/logger'
 import { BadRequest } from '@self/error-handling/httpErrors'
-const DigitalLink = db.DigitalLink
+const DigitalLink01 = db.DigitalLink01
+const DigitalLink99 = db.DigitalLink99
 
 type DigitalLinkFull_schema = components['schemas']['DigitalLinkFull']
 type DigitalLinkURL_schema = components['schemas']['DigitalLinkURL']
 
-const getAllEntries = async (
-    _: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
+const getAllEntries = async (req: Request, res: Response): Promise<void> => {
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`getAllEntries(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`getAllEntries(), 01`)
+    }
+
     try {
         const codes = await DigitalLink.findAll({ raw: true })
         res.status(200).json(codes)
@@ -28,6 +36,13 @@ const resolveDigitalLinkByGtin = async (
     req: Request,
     res: Response
 ): Promise<void> => {
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
+    else digitalLinkSpecifier === '01'
+    DigitalLink = DigitalLink99
+
     try {
         const gtin: number = Number(req.params.gtin)
         const destinationLink = await DigitalLink.findByPk(gtin)
@@ -61,6 +76,13 @@ const resolveDigitalLinkBySerialId = async (
     req: Request,
     res: Response
 ): Promise<void> => {
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
+    else digitalLinkSpecifier === '01'
+    DigitalLink = DigitalLink99
+
     try {
         const gtin: number = Number(req.params.gtin)
         const serialId: number = Number(req.params.serialId)
@@ -95,6 +117,17 @@ const createDigitalLink = async (
 ): Promise<void> => {
     if (!auth(req, res)) return
 
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`getAllEntries(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`getAllEntries(), 01`)
+    }
+
     const body: DigitalLinkFull_schema = req.body
     const destinationURL: string = body.destinationURL
     const gtin: number = body.gtin
@@ -128,6 +161,16 @@ const deleteDigitalLinkByGtin = async (
 ): Promise<void> => {
     if (!auth(req, res)) return
 
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`getAllEntries(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`getAllEntries(), 01`)
+    }
     const gtin: number = Number(req.params.gtin)
 
     try {
@@ -147,6 +190,13 @@ const deleteDigitalLinkByGtin = async (
 
 const updateDigitalLink = async (req: Request, res: Response) => {
     if (!auth(req, res)) return
+
+    let DigitalLink
+    const digitalLinkSpecifier = req.params.digitalLinkSpecifier
+
+    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
+    else digitalLinkSpecifier === '01'
+    DigitalLink = DigitalLink99
 
     const gtin: string = req.params.gtin
     const body: DigitalLinkURL_schema = req.body

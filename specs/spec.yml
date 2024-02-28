@@ -27,18 +27,68 @@ paths:
                 type: string
 
 
-  /01/{gtin}:
+  /{digitalLinkSpecifier}:
+    get:
+      summary: Get all the entries created under 01 route
+      x-eov-operation-id: getAllEntries
+      x-eov-operation-handler: resolver
+      parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
+      responses:
+        '200':
+          description: A list of gtins and URls
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DigitalLinkFull'
+
+    post:
+      summary: Create a new DigitalLink
+      x-eov-operation-id: createDigitalLink
+      x-eov-operation-handler: resolver
+      parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DigitalLinkURL'
+      responses:
+        '201':
+          description: The created DigitalLink
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DigitalLinkFull'
+        "400":
+            $ref: "#/components/responses/400"
+        "401":
+            $ref: "#/components/responses/401"
+        "404":
+            $ref: "#/components/responses/404"
+
+
+
+
+  /{digitalLinkSpecifier}/{gtin}:
     get:
       summary: Go to the final location of the DigitalLink specified by the {gtin}
       x-eov-operation-id: resolveDigitalLinkByGtin
       x-eov-operation-handler: resolver 
       parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
         - in: path
           name: gtin
           schema:
             type: integer
           required: true
           description: Numeric gtin of the DigitalLink to resolve
+
       responses:
         '302':
           description: Go to the URL pointed by the DigitalLink code
@@ -52,6 +102,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
         - in: path
           name: gtin
           schema:
@@ -74,6 +125,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
         - in: path
           name: gtin
           schema:
@@ -107,12 +159,13 @@ paths:
         "404":
             $ref: "#/components/responses/404"
 
-  /01/{gtin}/21/{serialId}:
+  /{digitalLinkSpecifier}/{gtin}/21/{serialId}:
     get:
       summary: Go to the final location of the DigitalLink specified by the {gtin}
       x-eov-operation-id: resolveDigitalLinkBySerialId
       x-eov-operation-handler: resolver 
       parameters:
+        - $ref: '#/components/parameters/digitalLinkSpecifier'
         - in: path
           name: gtin
           schema:
@@ -131,52 +184,12 @@ paths:
         "404":
             $ref: "#/components/responses/404"
 
-  /:
-    get:
-      summary: Get all the entries
-      x-eov-operation-id: getAllEntries
-      x-eov-operation-handler: resolver
-      responses:
-        '200':
-          description: A list of gtins and URls
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DigitalLinkFull'
-
-    post:
-      summary: Create a new DigitalLink
-      x-eov-operation-id: createDigitalLink
-      x-eov-operation-handler: resolver
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DigitalLinkURL'
-      responses:
-        '201':
-          description: The created DigitalLink
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DigitalLinkFull'
-        "400":
-            $ref: "#/components/responses/400"
-        "401":
-            $ref: "#/components/responses/401"
-        "404":
-            $ref: "#/components/responses/404"
-
 
 
 
 components:
   schemas:
+
     DigitalLinkFull:
       type: object
       properties:
@@ -211,6 +224,18 @@ components:
               message:
                 type: string
       required: [errors]
+
+  parameters:
+    digitalLinkSpecifier:
+      in: path
+      name: digitalLinkSpecifier
+      schema:
+        type: integer
+        enum:
+          - 01
+          - 99
+      required: true
+      description: Specifier which digitalLink table to use
 
 
   responses:

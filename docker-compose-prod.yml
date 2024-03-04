@@ -9,7 +9,9 @@ services:
     container_name: resolver-api
     environment:
       NODE_ENV: production
-    command: yarn run serve
+    command: "bash -c 'npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html && npx tsc && npx tsc-alias && npx cpy specs/* .env.* ./dist && NODE_ENV=production node -r tsconfig-paths/register dist/src/server.js'"
+
+
 
 
 

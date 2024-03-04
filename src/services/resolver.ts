@@ -39,8 +39,13 @@ const resolveDigitalLinkByGtin = async (
     let DigitalLink
     const digitalLinkSpecifier = req.params.digitalLinkSpecifier
 
-    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
-    else digitalLinkSpecifier === '01'
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`resolveDigitalLinkByGtin(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`resolveDigitalLinkByGtin(), 01`)
+    }
     DigitalLink = DigitalLink99
 
     try {
@@ -79,8 +84,13 @@ const resolveDigitalLinkBySerialId = async (
     let DigitalLink
     const digitalLinkSpecifier = req.params.digitalLinkSpecifier
 
-    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
-    else digitalLinkSpecifier === '01'
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`resolveDigitalLinkBySerialId(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`resolveDigitalLinkBySerialId(), 01`)
+    }
     DigitalLink = DigitalLink99
 
     try {
@@ -122,10 +132,10 @@ const createDigitalLink = async (
 
     if (digitalLinkSpecifier === '99') {
         DigitalLink = DigitalLink99
-        logger.debug(`getAllEntries(), 99`)
+        logger.debug(`createDigitalLink(), 99`)
     } else {
         DigitalLink = DigitalLink01
-        logger.debug(`getAllEntries(), 01`)
+        logger.debug(`createDigitalLink(), 01`)
     }
 
     const body: DigitalLinkFull_schema = req.body
@@ -166,10 +176,10 @@ const deleteDigitalLinkByGtin = async (
 
     if (digitalLinkSpecifier === '99') {
         DigitalLink = DigitalLink99
-        logger.debug(`getAllEntries(), 99`)
+        logger.debug(`deleteDigitalLinkByGtin(), 99`)
     } else {
         DigitalLink = DigitalLink01
-        logger.debug(`getAllEntries(), 01`)
+        logger.debug(`deleteDigitalLinkByGtin(), 01`)
     }
     const gtin: number = Number(req.params.gtin)
 
@@ -194,9 +204,13 @@ const updateDigitalLink = async (req: Request, res: Response) => {
     let DigitalLink
     const digitalLinkSpecifier = req.params.digitalLinkSpecifier
 
-    if (digitalLinkSpecifier === '99') DigitalLink = DigitalLink01
-    else digitalLinkSpecifier === '01'
-    DigitalLink = DigitalLink99
+    if (digitalLinkSpecifier === '99') {
+        DigitalLink = DigitalLink99
+        logger.debug(`updateDigitalLink(), 99`)
+    } else {
+        DigitalLink = DigitalLink01
+        logger.debug(`updateDigitalLink(), 01`)
+    }
 
     const gtin: string = req.params.gtin
     const body: DigitalLinkURL_schema = req.body
@@ -207,6 +221,7 @@ const updateDigitalLink = async (req: Request, res: Response) => {
         logger.info(
             `PUT request for code with ${gtin}, code with that gtin not found, creating new code.`
         )
+        req.body.gtin = gtin;
         createDigitalLink(req, res)
     } else {
         logger.info(
@@ -214,7 +229,7 @@ const updateDigitalLink = async (req: Request, res: Response) => {
         )
         code.destinationURL = destinationURL
         code.save()
-        res.status(204).json(code.toJSON())
+        res.status(200).json(code.toJSON())
     }
 }
 

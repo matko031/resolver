@@ -4,13 +4,20 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "generate-types": "openapi-typescript specs/spec.yml --output src/types/api.ts",
       "dev": "docker exec -it resolver-api npx nodemon src/server.ts",
       "build": "docker exec -t resolver-api npx tsc && docker exec -t resolver-api npx tsc-alias && docker exec -t resolver-api npx cpy specs/* ./dist",
       "start": "docker exec -it resolver-api npx ts-node -r tsconfig-paths/register src/server",
-      "openapi:build": "docker exec -t resolver-api npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
       "serve": "docker exec -it resolver-api bash -c 'npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html && npx tsc && npx tsc-alias && npx cpy specs/* .env.* ./dist && node -r tsconfig-paths/register dist/src/server.js'",
       "test": "docker exec -it resolver-api npx jest",
+
+      "dev-local": "npx nodemon src/server.ts",
+      "build-local": "npx tsc && npx tsc-alias && npx cpy .env.dev specs/* ./dist",
+      "start-local": "NODE_ENV=development npx ts-node -r tsconfig-paths/register src/server",
+      "serve-local": "bash -c 'npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html && npx tsc && npx tsc-alias && npx cpy specs/* .env.* ./dist && NODE_ENV=development node -r tsconfig-paths/register dist/src/server.js'",
+      "test-local": "npx jest",
+
+      "generate-types": "openapi-typescript specs/spec.yml --output src/types/api.ts",
+      "openapi:build": "docker exec -t resolver-api npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html",
       "prettier:format": "docker exec -t resolver-api npx prettier --write \"{src,tests}/**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
       "prettier:check": "docker exec -t resolver-api npx prettier --check \"{src,tests}/**/*.{ts,tsx,js,md,mdx,css,yaml}\""
    },

@@ -46,7 +46,6 @@ const resolveDigitalLinkByGtin = async (
         DigitalLink = DigitalLink01
         logger.debug(`resolveDigitalLinkByGtin(), 01`)
     }
-    DigitalLink = DigitalLink99
 
     try {
         const gtin: number = Number(req.params.gtin)
@@ -91,7 +90,6 @@ const resolveDigitalLinkBySerialId = async (
         DigitalLink = DigitalLink01
         logger.debug(`resolveDigitalLinkBySerialId(), 01`)
     }
-    DigitalLink = DigitalLink99
 
     try {
         const gtin: number = Number(req.params.gtin)

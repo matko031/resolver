@@ -11,7 +11,7 @@
       "test": "docker exec resolver-api npx jest",
 
       "dev-local": "npx nodemon src/server.ts",
-      "build-local": "npx tsc && npx tsc-alias && npx cpy .env.dev specs/* ./dist",
+      "build-local": "npx tsc && npx tsc-alias && npx cpy .env.* specs/* ./dist",
       "start-local": "NODE_ENV=development npx ts-node -r tsconfig-paths/register src/server",
       "serve-local": "bash -c 'npx redocly build-docs ./specs/spec.yml -o ./specs/public/index.html && npx tsc && npx tsc-alias && npx cpy specs/* .env.* ./dist && NODE_ENV=development node -r tsconfig-paths/register dist/src/server.js'",
       "test-local": "npx jest",

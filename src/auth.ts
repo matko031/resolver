@@ -4,7 +4,6 @@ import logger from '@self/logging/logger'
 
 // API key authentication
 const auth = (req: Request, res: Response) => {
-
     let authOK = false
     const token = req.get('X-API-KEY')
     if (token && token === config.auth_token) {

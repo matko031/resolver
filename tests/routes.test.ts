@@ -97,11 +97,11 @@ describe('Test routes', () => {
                 .send('{"destinationURL":"modified.com"}')
 
             expect(res.status).toEqual(200)
-            expect(res.body.destinationURL).toEqual("modified.com");
+            expect(res.body.destinationURL).toEqual('modified.com')
 
             res = await request(app).get(`/${dls}`)
-            const code : any = res.body.find( (c : any) => c.gtin)
-            expect(code?.destinationURL).toEqual("modified.com")
+            const code: any = res.body.find((c: any) => c.gtin)
+            expect(code?.destinationURL).toEqual('modified.com')
         }
     })
 

@@ -221,7 +221,7 @@ const updateDigitalLink = async (req: Request, res: Response) => {
         logger.info(
             `PUT request for code with ${gtin}, code with that gtin not found, creating new code.`
         )
-        req.body.gtin = gtin;
+        req.body.gtin = gtin
         createDigitalLink(req, res)
     } else {
         logger.info(

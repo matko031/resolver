@@ -6,14 +6,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - ./:/home/node/app/
     container_name: resolver-api
     environment:
       NODE_ENV: development
-    command: npm run dev
+    tty: true
     depends_on:
       - database
+    volumes:
+      - ./:/home/node/app/
 
   database:
     build:

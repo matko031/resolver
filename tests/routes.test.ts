@@ -88,6 +88,23 @@ describe('Test routes', () => {
         }
     })
 
+    test('Test modify, auth OK', async () => {
+        for (let dls of dlSpecifiers) {
+            let res = await request(app)
+                .put(`/${dls}/1`)
+                .set('Content-Type', 'application/json')
+                .set('X-API-KEY', config.auth_token as string)
+                .send('{"destinationURL":"modified.com"}')
+
+            expect(res.status).toEqual(200)
+            expect(res.body.destinationURL).toEqual('modified.com')
+
+            res = await request(app).get(`/${dls}`)
+            const code: any = res.body.find((c: any) => c.gtin)
+            expect(code?.destinationURL).toEqual('modified.com')
+        }
+    })
+
     test('Test create, auth NOK', async () => {
         for (let dls of dlSpecifiers) {
             const res = await request(app)

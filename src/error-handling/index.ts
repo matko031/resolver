@@ -87,7 +87,7 @@ export const DatabaseErrorHandler = (
     response: Response,
     next: NextFunction
 ): void => {
-    console.log('db error handler')
+    logger.error(`DatabaseErrorHandler: ${error.message}`)
     if (error instanceof TimeoutError) {
         return next(
             new dbError(
@@ -183,7 +183,6 @@ export const trustedError = (
     next: NextFunction
 ): any => {
     const trusted = errorHandler.isTrustedError(err)
-    console.log('matko', trusted)
     const info: string = trusted
         ? ((err as HttpError).error as string)
         : err.message
